@@ -146,3 +146,9 @@ h1.title{
 }
 .footer .social a:hover{color:var(--gold); border-color:var(--gold)}
 .footer .social svg{width:16px;height:16px}
+
+.logo {
+  width: 60px;
+  height: 100px;
+  object-fit: contain;
+}
