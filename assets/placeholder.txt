@@ -1,0 +1,4 @@
+Save the attached poster image here with the filename: cover.jpg
+Path: assets/cover.jpg
+
+If you want me to embed the image into the site directly, reply and I will update `index.html` to include it.
