@@ -158,3 +158,41 @@ h1.title{
     font-weight: 300;
     color: #F2C96B;
 }
+
+.game-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+  padding: 0.95rem 2rem;
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    var(--gold-bright),
+    var(--gold),
+    var(--gold-dim)
+  );
+  color: var(--bg);
+  font-family: var(--display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  box-shadow: 0 10px 30px rgba(232, 185, 74, 0.2);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.game-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 36px rgba(232, 185, 74, 0.35);
+  filter: brightness(1.08);
+}
+
+.game-button:active {
+  transform: translateY(-1px);
+}
