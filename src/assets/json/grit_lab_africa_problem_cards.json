@@ -1,0 +1,536 @@
+{
+  "title": "GRIT Lab Africa Problem Cards",
+  "author": "Professor Abejide Ade-Ibijola",
+  "organisation": "GRIT Lab Africa",
+  "website": "www.gritlabafrica.org",
+  "email": "abejide@gritlabafrica.org",
+  "card_count": 30,
+  "fields": [
+    "id",
+    "title",
+    "problem_type",
+    "problem",
+    "examples",
+    "think_about_it",
+    "sdg_goals"
+  ],
+  "cards": [
+    {
+      "id": 1,
+      "title": "Problem Card 1 — Youth Unemployment",
+      "problem_type": "Jobs and income",
+      "problem": "Many young people struggle to find jobs after school.",
+      "examples": [
+        "No work experience",
+        "Few local opportunities",
+        "High competition"
+      ],
+      "think_about_it": "How could technology help young people find work or create work?",
+      "sdg_goals": [
+        "SDG 1: No Poverty",
+        "SDG 4: Quality Education",
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 9: Industry, Innovation and Infrastructure"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Problem Card 2 — Lack of Career Guidance",
+      "problem_type": "Education and future planning",
+      "problem": "Many learners do not know what careers to choose or how to prepare.",
+      "examples": [
+        "Little exposure to professions",
+        "Limited mentorship",
+        "Unclear pathways"
+      ],
+      "think_about_it": "How could learners get better career advice early?",
+      "sdg_goals": [
+        "SDG 4: Quality Education",
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 10: Reduced Inequalities"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Problem Card 3 — School Dropout",
+      "problem_type": "Education",
+      "problem": "Some learners leave school before finishing matric.",
+      "examples": [
+        "Family pressure",
+        "Financial stress",
+        "Loss of motivation"
+      ],
+      "think_about_it": "How could schools help learners stay motivated and supported?",
+      "sdg_goals": [
+        "SDG 1: No Poverty",
+        "SDG 4: Quality Education",
+        "SDG 10: Reduced Inequalities"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Problem Card 4 — Poor Study Support",
+      "problem_type": "Learning support",
+      "problem": "Many learners do not have enough help with homework and revision.",
+      "examples": [
+        "No tutor at home",
+        "Limited extra lessons",
+        "Hard subjects"
+      ],
+      "think_about_it": "How could learners get help outside the classroom?",
+      "sdg_goals": [
+        "SDG 4: Quality Education",
+        "SDG 10: Reduced Inequalities"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Problem Card 5 — Limited Access to Internet",
+      "problem_type": "Digital access",
+      "problem": "Not everyone has reliable internet for learning and opportunities.",
+      "examples": [
+        "Expensive data",
+        "Weak connections",
+        "Shared devices"
+      ],
+      "think_about_it": "How could communities access affordable digital learning?",
+      "sdg_goals": [
+        "SDG 4: Quality Education",
+        "SDG 9: Industry, Innovation and Infrastructure",
+        "SDG 10: Reduced Inequalities"
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Problem Card 6 — Limited Access to Devices",
+      "problem_type": "Technology access",
+      "problem": "Some young people do not have laptops or smart devices to learn with.",
+      "examples": [
+        "One phone shared at home",
+        "No laptop",
+        "Broken devices"
+      ],
+      "think_about_it": "How could more learners access technology tools?",
+      "sdg_goals": [
+        "SDG 4: Quality Education",
+        "SDG 9: Industry, Innovation and Infrastructure",
+        "SDG 10: Reduced Inequalities"
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Problem Card 7 — Illegal Dumping",
+      "problem_type": "Environment and cleanliness",
+      "problem": "Waste is often dumped in open spaces, making areas dirty and unsafe.",
+      "examples": [
+        "Piles of rubbish",
+        "Blocked drains",
+        "Bad smells"
+      ],
+      "think_about_it": "How could the community reduce illegal dumping?",
+      "sdg_goals": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 11: Sustainable Cities and Communities",
+        "SDG 12: Responsible Consumption and Production",
+        "SDG 13: Climate Action"
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Problem Card 8 — Poor Waste Collection",
+      "problem_type": "Service delivery",
+      "problem": "Garbage is not always collected quickly or efficiently.",
+      "examples": [
+        "Overflowing bins",
+        "Missed collection points",
+        "Dirty streets"
+      ],
+      "think_about_it": "How could waste collection become smarter?",
+      "sdg_goals": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 11: Sustainable Cities and Communities",
+        "SDG 12: Responsible Consumption and Production"
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Problem Card 9 — Crime and Safety Concerns",
+      "problem_type": "Public safety",
+      "problem": "Residents worry about theft, robbery, and unsafe areas.",
+      "examples": [
+        "Walking at night",
+        "House break-ins",
+        "Unsafe public spaces"
+      ],
+      "think_about_it": "How could safety be improved in the community?",
+      "sdg_goals": [
+        "SDG 11: Sustainable Cities and Communities",
+        "SDG 16: Peace, Justice and Strong Institutions"
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Problem Card 10 — Poor Street Lighting",
+      "problem_type": "Infrastructure and safety",
+      "problem": "Some streets are too dark at night, increasing fear and risk.",
+      "examples": [
+        "Broken lights",
+        "Unsafe walking routes",
+        "Difficult visibility"
+      ],
+      "think_about_it": "How could dark areas be identified and fixed faster?",
+      "sdg_goals": [
+        "SDG 7: Affordable and Clean Energy",
+        "SDG 9: Industry, Innovation and Infrastructure",
+        "SDG 11: Sustainable Cities and Communities",
+        "SDG 16: Peace, Justice and Strong Institutions"
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Problem Card 11 — Potholes and Damaged Roads",
+      "problem_type": "Road infrastructure",
+      "problem": "Roads may be damaged, making travel unsafe and slow.",
+      "examples": [
+        "Potholes",
+        "Water damage",
+        "Dangerous driving conditions"
+      ],
+      "think_about_it": "How could road problems be reported and fixed faster?",
+      "sdg_goals": [
+        "SDG 9: Industry, Innovation and Infrastructure",
+        "SDG 11: Sustainable Cities and Communities"
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Problem Card 12 — Traffic Congestion",
+      "problem_type": "Transport",
+      "problem": "Busy roads and traffic delays waste time and increase stress.",
+      "examples": [
+        "Rush hour traffic",
+        "Delayed taxis",
+        "Slow movement"
+      ],
+      "think_about_it": "How could transport move more smoothly?",
+      "sdg_goals": [
+        "SDG 9: Industry, Innovation and Infrastructure",
+        "SDG 11: Sustainable Cities and Communities",
+        "SDG 13: Climate Action"
+      ]
+    },
+    {
+      "id": 13,
+      "title": "Problem Card 13 — Taxi Safety and Coordination",
+      "problem_type": "Public transport",
+      "problem": "Commuters need safer, more reliable transport information.",
+      "examples": [
+        "Unclear taxi availability",
+        "Unsafe stops",
+        "Poor route coordination"
+      ],
+      "think_about_it": "How could transport information become more useful?",
+      "sdg_goals": [
+        "SDG 9: Industry, Innovation and Infrastructure",
+        "SDG 11: Sustainable Cities and Communities",
+        "SDG 16: Peace, Justice and Strong Institutions"
+      ]
+    },
+    {
+      "id": 14,
+      "title": "Problem Card 14 — Small Businesses Struggle to Find Customers",
+      "problem_type": "Business growth",
+      "problem": "Many local businesses struggle to attract enough customers.",
+      "examples": [
+        "Low visibility",
+        "Weak marketing",
+        "Limited online presence"
+      ],
+      "think_about_it": "How could local businesses reach more people?",
+      "sdg_goals": [
+        "SDG 1: No Poverty",
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 9: Industry, Innovation and Infrastructure"
+      ]
+    },
+    {
+      "id": 15,
+      "title": "Problem Card 15 — Youth Businesses Lack Support",
+      "problem_type": "Entrepreneurship",
+      "problem": "Young entrepreneurs may have ideas but lack support to grow.",
+      "examples": [
+        "No mentor",
+        "No business tools",
+        "No market access"
+      ],
+      "think_about_it": "How could young business owners get practical support?",
+      "sdg_goals": [
+        "SDG 4: Quality Education",
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 9: Industry, Innovation and Infrastructure"
+      ]
+    },
+    {
+      "id": 16,
+      "title": "Problem Card 16 — Lack of Financial Literacy",
+      "problem_type": "Money management",
+      "problem": "Some young people and families struggle to manage money well.",
+      "examples": [
+        "Poor budgeting",
+        "Debt stress",
+        "Weak saving habits"
+      ],
+      "think_about_it": "How could people learn money skills more easily?",
+      "sdg_goals": [
+        "SDG 1: No Poverty",
+        "SDG 4: Quality Education",
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 10: Reduced Inequalities"
+      ]
+    },
+    {
+      "id": 17,
+      "title": "Problem Card 17 — Food Insecurity",
+      "problem_type": "Basic needs",
+      "problem": "Some households struggle to get enough nutritious food.",
+      "examples": [
+        "Skipping meals",
+        "Rising food prices",
+        "Limited healthy food"
+      ],
+      "think_about_it": "How could communities improve food access?",
+      "sdg_goals": [
+        "SDG 1: No Poverty",
+        "SDG 2: Zero Hunger",
+        "SDG 3: Good Health and Well-being",
+        "SDG 12: Responsible Consumption and Production"
+      ]
+    },
+    {
+      "id": 18,
+      "title": "Problem Card 18 — Mental Health Stress",
+      "problem_type": "Health and wellbeing",
+      "problem": "Many young people face stress, anxiety, and emotional pressure.",
+      "examples": [
+        "Exam stress",
+        "Family stress",
+        "Feeling alone"
+      ],
+      "think_about_it": "How could young people get support earlier?",
+      "sdg_goals": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 4: Quality Education",
+        "SDG 10: Reduced Inequalities"
+      ]
+    },
+    {
+      "id": 19,
+      "title": "Problem Card 19 — Substance Abuse",
+      "problem_type": "Health and social wellbeing",
+      "problem": "Drug and alcohol abuse can affect young people and families.",
+      "examples": [
+        "Peer pressure",
+        "Addiction",
+        "Family problems"
+      ],
+      "think_about_it": "How could communities protect youth better?",
+      "sdg_goals": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 4: Quality Education",
+        "SDG 16: Peace, Justice and Strong Institutions"
+      ]
+    },
+    {
+      "id": 20,
+      "title": "Problem Card 20 — Limited Access to Healthcare Information",
+      "problem_type": "Health awareness",
+      "problem": "People may not know enough about prevention, symptoms, or where to get help.",
+      "examples": [
+        "Late treatment",
+        "Wrong information",
+        "Poor health decisions"
+      ],
+      "think_about_it": "How could health information reach more people?",
+      "sdg_goals": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 4: Quality Education",
+        "SDG 10: Reduced Inequalities"
+      ]
+    },
+    {
+      "id": 21,
+      "title": "Problem Card 21 — Long Queues for Services",
+      "problem_type": "Public service access",
+      "problem": "Residents often spend a long time waiting for services.",
+      "examples": [
+        "Clinic queues",
+        "Office queues",
+        "Delayed support"
+      ],
+      "think_about_it": "How could services become faster and better organised?",
+      "sdg_goals": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 9: Industry, Innovation and Infrastructure",
+        "SDG 11: Sustainable Cities and Communities",
+        "SDG 16: Peace, Justice and Strong Institutions"
+      ]
+    },
+    {
+      "id": 22,
+      "title": "Problem Card 22 — Water Leaks and Water Waste",
+      "problem_type": "Utilities",
+      "problem": "Water leaks and poor monitoring can waste an important resource.",
+      "examples": [
+        "Broken pipes",
+        "Water loss",
+        "Slow repairs"
+      ],
+      "think_about_it": "How could leaks be spotted and fixed earlier?",
+      "sdg_goals": [
+        "SDG 6: Clean Water and Sanitation",
+        "SDG 9: Industry, Innovation and Infrastructure",
+        "SDG 11: Sustainable Cities and Communities",
+        "SDG 12: Responsible Consumption and Production"
+      ]
+    },
+    {
+      "id": 23,
+      "title": "Problem Card 23 — Electricity Problems",
+      "problem_type": "Energy access",
+      "problem": "Power interruptions affect learning, business, and daily life.",
+      "examples": [
+        "Interrupted study time",
+        "Business downtime",
+        "Daily disruption"
+      ],
+      "think_about_it": "How could people manage better during electricity problems?",
+      "sdg_goals": [
+        "SDG 4: Quality Education",
+        "SDG 7: Affordable and Clean Energy",
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 9: Industry, Innovation and Infrastructure"
+      ]
+    },
+    {
+      "id": 24,
+      "title": "Problem Card 24 — Lack of Safe Recreational Spaces",
+      "problem_type": "Youth development",
+      "problem": "Young people may not have enough safe places to learn, play, and create.",
+      "examples": [
+        "Few youth hubs",
+        "Unsafe parks",
+        "Limited after-school spaces"
+      ],
+      "think_about_it": "How could more safe youth spaces be created?",
+      "sdg_goals": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 4: Quality Education",
+        "SDG 11: Sustainable Cities and Communities",
+        "SDG 16: Peace, Justice and Strong Institutions"
+      ]
+    },
+    {
+      "id": 25,
+      "title": "Problem Card 25 — Gender-Based Violence Awareness",
+      "problem_type": "Social protection",
+      "problem": "Communities need stronger awareness, prevention, and support systems.",
+      "examples": [
+        "Fear of reporting",
+        "Lack of information",
+        "Weak support access"
+      ],
+      "think_about_it": "How could people get help safely and quickly?",
+      "sdg_goals": [
+        "SDG 3: Good Health and Well-being",
+        "SDG 5: Gender Equality",
+        "SDG 10: Reduced Inequalities",
+        "SDG 16: Peace, Justice and Strong Institutions"
+      ]
+    },
+    {
+      "id": 26,
+      "title": "Problem Card 26 — Poor Access to Local Opportunities",
+      "problem_type": "Information access",
+      "problem": "People often miss opportunities because they do not hear about them in time.",
+      "examples": [
+        "Scholarships missed",
+        "Job posts missed",
+        "Event information missed"
+      ],
+      "think_about_it": "How could opportunities reach more young people?",
+      "sdg_goals": [
+        "SDG 4: Quality Education",
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 10: Reduced Inequalities"
+      ]
+    },
+    {
+      "id": 27,
+      "title": "Problem Card 27 — Weak Community Reporting Systems",
+      "problem_type": "Civic participation",
+      "problem": "Residents may not know how to report local problems effectively.",
+      "examples": [
+        "Broken lights not reported",
+        "Waste not reported",
+        "Slow response"
+      ],
+      "think_about_it": "How could reporting local issues become easier?",
+      "sdg_goals": [
+        "SDG 9: Industry, Innovation and Infrastructure",
+        "SDG 11: Sustainable Cities and Communities",
+        "SDG 16: Peace, Justice and Strong Institutions"
+      ]
+    },
+    {
+      "id": 28,
+      "title": "Problem Card 28 — Poor Local Business Data",
+      "problem_type": "Business intelligence",
+      "problem": "Small businesses often do not track enough information to improve.",
+      "examples": [
+        "No sales data",
+        "No customer insights",
+        "No planning information"
+      ],
+      "think_about_it": "How could business owners make better decisions?",
+      "sdg_goals": [
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 9: Industry, Innovation and Infrastructure"
+      ]
+    },
+    {
+      "id": 29,
+      "title": "Problem Card 29 — Skills Mismatch",
+      "problem_type": "Education and employability",
+      "problem": "Young people may study things that do not match available opportunities.",
+      "examples": [
+        "Outdated skills",
+        "Little digital training",
+        "Weak job readiness"
+      ],
+      "think_about_it": "How could learners build more relevant future skills?",
+      "sdg_goals": [
+        "SDG 4: Quality Education",
+        "SDG 8: Decent Work and Economic Growth",
+        "SDG 9: Industry, Innovation and Infrastructure"
+      ]
+    },
+    {
+      "id": 30,
+      "title": "Problem Card 30 — Community Problems Are Not Solved Early",
+      "problem_type": "Problem-solving and development",
+      "problem": "Many community problems grow because they are noticed too late.",
+      "examples": [
+        "Small issues become big",
+        "Slow response",
+        "Poor coordination"
+      ],
+      "think_about_it": "How could communities spot and solve problems earlier?",
+      "sdg_goals": [
+        "SDG 9: Industry, Innovation and Infrastructure",
+        "SDG 11: Sustainable Cities and Communities",
+        "SDG 16: Peace, Justice and Strong Institutions",
+        "SDG 17: Partnerships for the Goals"
+      ]
+    }
+  ]
+}

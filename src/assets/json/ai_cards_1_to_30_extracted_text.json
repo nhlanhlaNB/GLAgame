@@ -1,0 +1,604 @@
+{
+    "aiCards": [
+        {
+            "fileName": "AI_1.png",
+            "id": 1,
+            "cardNumber": "01",
+            "cardLabel": "AI CARD 01",
+            "title": "AI THAT UNDERSTANDS TEXT",
+            "subtitle": "NATURAL LANGUAGE PROCESSING (NLP)",
+            "description": "This type of AI can read, understand, analyse, and generate human language. It helps computers understand what people write or say.",
+            "whatThisAiCanDo": "Understands text in different languages, answers questions, summarises information, extracts key points, translates, and generates written content.",
+            "examples": "Chatbots, virtual assistants, translation tools, document summarisation, email helpers, essay writing tools, and voice-to-text systems.",
+            "howItCanHelpSolveProblems": "It can help people access information, communicate better, learn faster, get support, make decisions, and automate many text-based tasks.",
+            "thinkAboutIt": "How could this AI help solve real problems in education, health, jobs, business, government, or your community?",
+            "aiType": "Text AI / NLP",
+            "bestFor": "Understanding, communicating, analysing and generating text",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_2.png",
+            "id": 2,
+            "cardNumber": "02",
+            "cardLabel": "AI CARD 02",
+            "title": "AI THAT RECOGNISES IMAGES",
+            "subtitle": "COMPUTER VISION",
+            "description": "This type of AI can look at pictures and videos, identify objects, people, places, or patterns, and make sense of visual information.",
+            "whatThisAiCanDo": "Identifies objects in images, recognises faces or items, detects defects or damage, classifies scenes, and analyses visual data from cameras or photos.",
+            "examples": "Face recognition, plant disease detection, pothole detection, medical image analysis, and security camera monitoring.",
+            "howItCanHelpSolveProblems": "It can help monitor roads, support healthcare, improve safety, inspect waste or infrastructure, and make visual reporting faster and smarter.",
+            "thinkAboutIt": "Where could AI seeing and understanding images help your community?",
+            "aiType": "Computer Vision",
+            "bestFor": "Seeing, detecting, identifying and analysing images",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_3.png",
+            "id": 3,
+            "cardNumber": "03",
+            "cardLabel": "AI CARD 03",
+            "title": "AI THAT UNDERSTANDS SPEECH",
+            "subtitle": "SPEECH RECOGNITION AND VOICE AI",
+            "description": "This type of AI can listen to human speech, convert spoken words into text, recognise voice commands, and help machines respond to what people say.",
+            "whatThisAiCanDo": "Converts speech to text, understands spoken commands, supports voice search, enables dictation, and helps machines interact through voice.",
+            "examples": "Voice assistants, voice typing, smart speakers, call-centre transcription, and hands-free mobile tools.",
+            "howItCanHelpSolveProblems": "It can help people who cannot type easily, improve access for low-literacy users, support local-language services, and make digital tools more inclusive.",
+            "thinkAboutIt": "How could voice AI help people who cannot type or read easily?",
+            "aiType": "Voice AI",
+            "bestFor": "Listening, transcribing, understanding and responding to speech",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_4.png",
+            "id": 4,
+            "cardNumber": "04",
+            "cardLabel": "AI CARD 04",
+            "title": "AI THAT PREDICTS TRENDS",
+            "subtitle": "PREDICTIVE ANALYTICS",
+            "description": "This type of AI analyses patterns in data and uses past information to predict what may happen next.",
+            "whatThisAiCanDo": "Finds patterns in data, forecasts future outcomes, detects risks early, estimates demand, and supports planning and decision-making.",
+            "examples": "Weather prediction, disease prediction, demand forecasting, crop yield forecasting, and traffic prediction.",
+            "howItCanHelpSolveProblems": "It can help communities prepare earlier, allocate resources better, reduce waste, and make smarter decisions based on likely future events.",
+            "thinkAboutIt": "What could AI help predict in your school, business, township, or community?",
+            "aiType": "Predictive AI",
+            "bestFor": "Forecasting, planning, trend detection and decision support",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_5.png",
+            "id": 5,
+            "cardNumber": "05",
+            "cardLabel": "AI CARD 05",
+            "title": "AI THAT CREATES IMAGES",
+            "subtitle": "GENERATIVE IMAGE AI",
+            "description": "This type of AI can generate pictures, illustrations, and visual designs from prompts, ideas, or reference material.",
+            "whatThisAiCanDo": "Creates original visuals, generates design concepts, produces illustrations from text, edits images, and helps people visualise ideas quickly.",
+            "examples": "Marketing posters, digital art, visual mock-ups, creative concept images, and educational graphics.",
+            "howItCanHelpSolveProblems": "It can help entrepreneurs, educators, and innovators communicate ideas, design campaigns, create awareness materials, and prototype solutions faster.",
+            "thinkAboutIt": "How could image-generating AI help small businesses, schools, or community projects?",
+            "aiType": "Generative AI",
+            "bestFor": "Creating visuals, illustrating ideas and design support",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_6.png",
+            "id": 6,
+            "cardNumber": "06",
+            "cardLabel": "AI CARD 06",
+            "title": "AI THAT RECOMMENDS THINGS",
+            "subtitle": "RECOMMENDATION SYSTEMS",
+            "description": "This type of AI learns what people like or need and suggests useful content, products, services, or opportunities.",
+            "whatThisAiCanDo": "Suggests items based on preferences, recommends learning resources, matches people with useful options, and personalises digital experiences.",
+            "examples": "Netflix suggestions, shopping recommendations, music playlists, course suggestions, and job opportunity recommendations.",
+            "howItCanHelpSolveProblems": "It can help learners discover resources, connect youth to opportunities, guide customers, and improve access to useful information and services.",
+            "thinkAboutIt": "How could recommendation AI help people discover better opportunities?",
+            "aiType": "Recommendation AI",
+            "bestFor": "Personalising choices, matching options and guiding discovery",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_7.png",
+            "id": 7,
+            "cardNumber": "07",
+            "cardLabel": "AI CARD 07",
+            "title": "AI THAT DETECTS FRAUD",
+            "subtitle": "FRAUD DETECTION AI",
+            "description": "This type of AI identifies unusual or suspicious activity and helps detect scams, fraud, or security threats.",
+            "whatThisAiCanDo": "Detects unusual behaviour, flags suspicious transactions, finds anomalies in data, supports cybersecurity, and helps reduce fraud risks.",
+            "examples": "Fraud alerts, scam detection, banking security systems, identity protection, and cybersecurity monitoring.",
+            "howItCanHelpSolveProblems": "It can help protect communities, businesses, and public systems from scams, financial loss, and malicious activity.",
+            "thinkAboutIt": "How could fraud-detection AI help stop scams in your community or organisation?",
+            "aiType": "Security AI",
+            "bestFor": "Detecting anomalies, spotting fraud and protecting systems",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_8.png",
+            "id": 8,
+            "cardNumber": "08",
+            "cardLabel": "AI CARD 08",
+            "title": "AI THAT HELPS DOCTORS DIAGNOSE",
+            "subtitle": "MEDICAL DIAGNOSTIC AI",
+            "description": "This type of AI analyses medical information and helps doctors detect disease, assess risk, and support diagnosis.",
+            "whatThisAiCanDo": "Analyses medical images and records, detects warning signs, supports diagnosis, monitors health data, and helps clinicians make better decisions.",
+            "examples": "X-ray analysis, cancer detection, symptom screening, patient monitoring, and diagnostic decision support.",
+            "howItCanHelpSolveProblems": "It can improve early detection, support overstretched health systems, expand access to screening, and help communities receive faster care.",
+            "thinkAboutIt": "How could diagnostic AI improve access to healthcare in African communities?",
+            "aiType": "Healthcare AI",
+            "bestFor": "Diagnosis support, screening and health decision assistance",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_9.png",
+            "id": 9,
+            "cardNumber": "09",
+            "cardLabel": "AI CARD 09",
+            "title": "AI THAT DRIVES VEHICLES",
+            "subtitle": "AUTONOMOUS VEHICLE AI",
+            "description": "This type of AI helps vehicles navigate, sense their surroundings, and make driving decisions with limited or reduced human control.",
+            "whatThisAiCanDo": "Analyses road conditions, detects obstacles, follows routes, supports navigation, and helps vehicles move safely and efficiently.",
+            "examples": "Self-driving cars, delivery drones, autonomous shuttles, and smart navigation systems.",
+            "howItCanHelpSolveProblems": "It can improve transport efficiency, support delivery services, reduce human error, and enable smarter mobility solutions.",
+            "thinkAboutIt": "How could autonomous vehicle AI improve transport and access in Africa?",
+            "aiType": "Autonomous AI",
+            "bestFor": "Navigation, sensing, route planning and smart mobility",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_10.png",
+            "id": 10,
+            "cardNumber": "10",
+            "cardLabel": "AI CARD 10",
+            "title": "AI THAT CONTROLS ROBOTS",
+            "subtitle": "ROBOTICS AI",
+            "description": "This type of AI helps robots sense, decide, and act so that machines can perform tasks automatically or assist people more effectively.",
+            "whatThisAiCanDo": "Controls robotic movement, automates tasks, supports precision work, helps machines respond to conditions, and enables smart assistance.",
+            "examples": "Warehouse robots, factory robots, service robots, farm robots, and robotic assistants.",
+            "howItCanHelpSolveProblems": "It can improve productivity, support dangerous or repetitive tasks, assist workers, and help deliver services more efficiently.",
+            "thinkAboutIt": "What local tasks could robots help with safely and effectively?",
+            "aiType": "Robotics AI",
+            "bestFor": "Automation, precision work, machine control and assistance",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_11.png",
+            "id": 11,
+            "cardNumber": "11",
+            "cardLabel": "AI CARD 11",
+            "title": "AI THAT TRANSLATES LANGUAGES",
+            "subtitle": "LANGUAGE TRANSLATION AI",
+            "description": "This type of AI converts speech or text from one language into another, helping people communicate across languages and understand content more easily.",
+            "whatThisAiCanDo": "Translates text and speech, supports multilingual communication, creates subtitles, and helps users access information in different languages.",
+            "examples": "English-Zulu translation, live subtitles, website translation, multilingual chat support, and translation apps.",
+            "howItCanHelpSolveProblems": "It can reduce language barriers, improve access to services, support African languages, and help people learn, trade, and collaborate across communities.",
+            "thinkAboutIt": "How could translation AI help African languages grow and connect more people?",
+            "aiType": "Translation AI",
+            "bestFor": "Language access, multilingual communication and inclusion",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_12.png",
+            "id": 12,
+            "cardNumber": "12",
+            "cardLabel": "AI CARD 12",
+            "title": "AI THAT WRITES CONTENT",
+            "subtitle": "CONTENT GENERATION AI",
+            "description": "This type of AI generates written material such as messages, notes, essays, reports, and other text-based content from prompts or instructions.",
+            "whatThisAiCanDo": "Writes drafts, summarises information, generates ideas, rewrites text, and helps people create clear written content faster.",
+            "examples": "Blog writing, email writing, study notes, report drafting, social media captions, and content planning.",
+            "howItCanHelpSolveProblems": "It can help entrepreneurs communicate better, support learners, improve documentation, and speed up information sharing in schools, communities, and businesses.",
+            "thinkAboutIt": "How could content-writing AI help entrepreneurs, students, or community projects?",
+            "aiType": "Generative Text AI",
+            "bestFor": "Writing, summarising, drafting and communication support",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_13.png",
+            "id": 13,
+            "cardNumber": "13",
+            "cardLabel": "AI CARD 13",
+            "title": "AI THAT UNDERSTANDS EMOTIONS",
+            "subtitle": "EMOTION ANALYSIS AI",
+            "description": "This type of AI analyses voice, text, or facial expressions to estimate emotions, sentiment, or mood and understand how people may be feeling.",
+            "whatThisAiCanDo": "Detects emotional tone, analyses sentiment, identifies stress signals, and helps interpret customer or user feedback.",
+            "examples": "Customer feedback analysis, stress detection, call-centre sentiment tracking, and emotional tone analysis in text or speech.",
+            "howItCanHelpSolveProblems": "It can help organisations understand people better, support wellbeing initiatives, improve customer care, and identify emotional concerns earlier.",
+            "thinkAboutIt": "Could AI that understands emotions help support mental health or better service delivery?",
+            "aiType": "Emotion AI",
+            "bestFor": "Sentiment analysis, feedback understanding and wellbeing insights",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_14.png",
+            "id": 14,
+            "cardNumber": "14",
+            "cardLabel": "AI CARD 14",
+            "title": "AI THAT IMPROVES EDUCATION",
+            "subtitle": "EDUCATION AI",
+            "description": "This type of AI supports learning by personalising lessons, answering questions, adapting content, and helping students learn at their own pace.",
+            "whatThisAiCanDo": "Personalises learning, explains concepts, tracks progress, recommends learning material, and supports teachers and learners.",
+            "examples": "Smart tutors, adaptive learning apps, personalised revision tools, and AI study assistants.",
+            "howItCanHelpSolveProblems": "It can make school learning easier, improve study support, and help more learners access quality educational guidance.",
+            "thinkAboutIt": "How could AI make school learning easier and more inclusive?",
+            "aiType": "Education AI",
+            "bestFor": "Personalised learning, tutoring and academic support",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_15.png",
+            "id": 15,
+            "cardNumber": "15",
+            "cardLabel": "AI CARD 15",
+            "title": "AI THAT HELPS FARMERS",
+            "subtitle": "AGRICULTURAL AI",
+            "description": "This type of AI helps farmers monitor crops, soil, weather, and farming conditions so they can improve production and make better decisions.",
+            "whatThisAiCanDo": "Monitors crops and soil, detects pests or disease, analyses farm data, and supports smarter agricultural planning.",
+            "examples": "Drone crop monitoring, pest detection, soil analysis, irrigation support, and farm prediction tools.",
+            "howItCanHelpSolveProblems": "It can improve food production, reduce losses, support farmers with better information, and help communities strengthen food security.",
+            "thinkAboutIt": "How could AI improve farming and food production in your area?",
+            "aiType": "Agricultural AI",
+            "bestFor": "Crop monitoring, farm decision support and food production",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_16.png",
+            "id": 16,
+            "cardNumber": "16",
+            "cardLabel": "AI CARD 16",
+            "title": "AI THAT MONITORS THE ENVIRONMENT",
+            "subtitle": "ENVIRONMENTAL AI",
+            "description": "This type of AI tracks environmental conditions, pollution, and climate patterns to help people monitor changes and respond earlier.",
+            "whatThisAiCanDo": "Tracks pollution, monitors climate and environmental data, predicts environmental risks, and detects harmful changes.",
+            "examples": "Air quality monitoring, flood prediction, wildfire detection, and pollution analysis.",
+            "howItCanHelpSolveProblems": "It can help protect the environment, improve planning, support disaster readiness, and make communities more aware of environmental risks.",
+            "thinkAboutIt": "How could AI help protect the environment in your community?",
+            "aiType": "Environmental AI",
+            "bestFor": "Monitoring climate, pollution and environmental risk",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_17.png",
+            "id": 17,
+            "cardNumber": "17",
+            "cardLabel": "AI CARD 17",
+            "title": "AI THAT MANAGES TRAFFIC",
+            "subtitle": "TRAFFIC MANAGEMENT AI",
+            "description": "This type of AI analyses traffic flow and transport patterns to help roads, signals, and public transport systems move more efficiently.",
+            "whatThisAiCanDo": "Optimises traffic signals, predicts congestion, analyses transport data, and supports smarter routing and mobility planning.",
+            "examples": "Smart traffic lights, congestion prediction, traffic monitoring dashboards, and transport optimisation systems.",
+            "howItCanHelpSolveProblems": "It can reduce congestion, improve road efficiency, support township transport, and help commuters travel more smoothly and safely.",
+            "thinkAboutIt": "How could AI improve traffic and transport in your township or city?",
+            "aiType": "Smart City AI",
+            "bestFor": "Traffic flow, transport efficiency and mobility planning",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_18.png",
+            "id": 18,
+            "cardNumber": "18",
+            "cardLabel": "AI CARD 18",
+            "title": "AI THAT DETECTS CRIME PATTERNS",
+            "subtitle": "PUBLIC SAFETY AI",
+            "description": "This type of AI analyses crime and incident data to identify patterns, hotspots, or warning signs that can help improve public safety planning.",
+            "whatThisAiCanDo": "Analyses crime data, identifies hotspots, spots patterns, supports alert systems, and helps guide safety planning.",
+            "examples": "Crime hotspot detection, public safety dashboards, pattern analysis, and incident trend monitoring.",
+            "howItCanHelpSolveProblems": "It can help communities stay safer, support evidence-based planning, improve reporting systems, and guide prevention efforts.",
+            "thinkAboutIt": "How could AI help communities stay safer without harming privacy or fairness?",
+            "aiType": "Public Safety AI",
+            "bestFor": "Pattern detection, hotspot analysis and safety planning",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_19.png",
+            "id": 19,
+            "cardNumber": "19",
+            "cardLabel": "AI CARD 19",
+            "title": "AI THAT ANALYSES BUSINESS DATA",
+            "subtitle": "BUSINESS ANALYTICS AI",
+            "description": "This type of AI examines business information such as sales, customer behaviour, and market trends to help organisations make better decisions.",
+            "whatThisAiCanDo": "Analyses customer and market data, spots business trends, supports forecasting, and helps improve planning and decision-making.",
+            "examples": "Sales analytics, demand forecasting, customer insights, market analysis, and business dashboards.",
+            "howItCanHelpSolveProblems": "It can help small businesses grow, improve planning, understand customers better, and make smarter decisions with limited resources.",
+            "thinkAboutIt": "How could AI help business owners make better decisions?",
+            "aiType": "Business AI",
+            "bestFor": "Data analysis, forecasting and business decision support",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_20.png",
+            "id": 20,
+            "cardNumber": "20",
+            "cardLabel": "AI CARD 20",
+            "title": "AI THAT GENERATES MUSIC",
+            "subtitle": "MUSIC GENERATION AI",
+            "description": "This type of AI creates melodies, beats, sound patterns, or musical ideas automatically from prompts, styles, or input examples.",
+            "whatThisAiCanDo": "Generates melodies and beats, supports music composition, creates sound ideas, and helps artists experiment with new styles.",
+            "examples": "Music generation tools, AI beat makers, sound design assistants, and creative audio composition tools.",
+            "howItCanHelpSolveProblems": "It can help artists create more easily, support creative education, assist content makers, and expand access to music experimentation.",
+            "thinkAboutIt": "How could artists or teachers use AI music tools creatively?",
+            "aiType": "Creative AI",
+            "bestFor": "Music composition, beat creation and creative experimentation",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_21.png",
+            "id": 21,
+            "cardNumber": "21",
+            "cardLabel": "AI CARD 21",
+            "title": "AI THAT DETECTS FAKE NEWS",
+            "subtitle": "MISINFORMATION DETECTION AI",
+            "description": "This type of AI analyses online content to identify misinformation, misleading claims, or suspicious media and help people verify what they read or share.",
+            "whatThisAiCanDo": "Checks content, flags suspicious stories, compares claims with trusted sources, and helps detect manipulated or misleading information.",
+            "examples": "Fact-checking tools, misinformation detection systems, image verification, social media monitoring, and news credibility analysis.",
+            "howItCanHelpSolveProblems": "It can protect communities from harmful false information, support digital literacy, improve public awareness, and help people make safer decisions.",
+            "thinkAboutIt": "Why is fake-news detection important for African communities, elections, health, and public safety?",
+            "aiType": "Media Verification AI",
+            "bestFor": "Misinformation detection, fact-checking and digital trust",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_22.png",
+            "id": 22,
+            "cardNumber": "22",
+            "cardLabel": "AI CARD 22",
+            "title": "AI THAT SUMMARISES INFORMATION",
+            "subtitle": "TEXT SUMMARISATION AI",
+            "description": "This type of AI reads long text or large amounts of information and turns it into shorter, clearer summaries so people can understand important ideas more quickly.",
+            "whatThisAiCanDo": "Summarises reports, articles, meeting notes, lessons, and research documents, helping users save time and focus on key points.",
+            "examples": "Research summaries, meeting notes, article digests, study guides, executive summaries, and document review tools.",
+            "howItCanHelpSolveProblems": "It can help learners, professionals, businesses, and communities understand important information faster, improve decision-making, and make knowledge easier to access.",
+            "thinkAboutIt": "How could summarisation AI help students, leaders, or communities deal with too much information?",
+            "aiType": "Summarisation AI",
+            "bestFor": "Information digestion, study support and faster understanding",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_23.png",
+            "id": 23,
+            "cardNumber": "23",
+            "cardLabel": "AI CARD 23",
+            "title": "AI THAT IMPROVES CUSTOMER SERVICE",
+            "subtitle": "CUSTOMER SERVICE AI",
+            "description": "This type of AI answers customer questions, supports users, automates common service tasks, and improves response times so people get help quickly and easily.",
+            "whatThisAiCanDo": "Answers questions automatically, supports customer conversations, routes requests, and helps organisations serve people faster and more consistently.",
+            "examples": "Customer support chatbots, helpdesk assistants, FAQ bots, service ticket routing, and virtual support agents.",
+            "howItCanHelpSolveProblems": "It can help businesses and public services respond faster, reduce waiting time, improve communication, and support people more efficiently.",
+            "thinkAboutIt": "How could customer service AI help local businesses or community services respond better to people?",
+            "aiType": "Service AI",
+            "bestFor": "Support automation, customer communication and service delivery",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_24.png",
+            "id": 24,
+            "cardNumber": "24",
+            "cardLabel": "AI CARD 24",
+            "title": "AI THAT DESIGNS PRODUCTS",
+            "subtitle": "PRODUCT DESIGN AI",
+            "description": "This type of AI helps generate product ideas, support design exploration, and improve product development from concept to creation.",
+            "whatThisAiCanDo": "Generates design concepts, suggests new product ideas, supports prototyping, and helps improve product features and usability.",
+            "examples": "Engineering design tools, packaging design assistants, 3D concept generation, UI mockup tools, and product ideation systems.",
+            "howItCanHelpSolveProblems": "It can help invent useful tools, improve products for communities, support entrepreneurs, and speed up innovation.",
+            "thinkAboutIt": "How could product-design AI help African innovators create better solutions for everyday needs?",
+            "aiType": "Design AI",
+            "bestFor": "Product innovation, prototyping and creative design support",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_25.png",
+            "id": 25,
+            "cardNumber": "25",
+            "cardLabel": "AI CARD 25",
+            "title": "AI THAT DETECTS POTHOLES",
+            "subtitle": "INFRASTRUCTURE MONITORING AI",
+            "description": "This type of AI detects road damage like potholes from images or sensor data and helps report infrastructure problems faster for quicker action.",
+            "whatThisAiCanDo": "Finds potholes and road damage, analyses road images, supports reporting, and helps prioritise repairs.",
+            "examples": "Road condition monitoring, computer vision road scanning, smart city maintenance systems, and public works reporting tools.",
+            "howItCanHelpSolveProblems": "It can make roads safer, help municipalities respond faster, reduce accidents, and improve transport planning.",
+            "thinkAboutIt": "How could pothole-detection AI improve roads in your town or city?",
+            "aiType": "Infrastructure AI",
+            "bestFor": "Road monitoring, safety and repair prioritisation",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_26.png",
+            "id": 26,
+            "cardNumber": "26",
+            "cardLabel": "AI CARD 26",
+            "title": "AI THAT HELPS FIND JOBS",
+            "subtitle": "JOB MATCHING AI",
+            "description": "This type of AI connects people to the right work opportunities. It analyses skills, experience, and job needs to improve recruitment matching and help more people find meaningful work.",
+            "whatThisAiCanDo": "Matches people to job opportunities, screens CVs, recommends openings, and helps improve job search support.",
+            "examples": "CV screening tools, job recommendation systems, career matching platforms, and employment support assistants.",
+            "howItCanHelpSolveProblems": "It can help youth find work faster, improve access to opportunities, support employers, and reduce information gaps in the labour market.",
+            "thinkAboutIt": "How could job-matching AI help young people discover better career opportunities?",
+            "aiType": "Employment AI",
+            "bestFor": "Job discovery, recruitment support and opportunity matching",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_27.png",
+            "id": 27,
+            "cardNumber": "27",
+            "cardLabel": "AI CARD 27",
+            "title": "AI THAT HELPS PLAN CITIES",
+            "subtitle": "URBAN PLANNING AI",
+            "description": "This type of AI analyses data from cities such as population, transport, land use, and services to support better infrastructure and urban planning decisions.",
+            "whatThisAiCanDo": "Analyses city data, supports infrastructure planning, maps growth patterns, and helps plan housing, transport, and services.",
+            "examples": "Housing planning tools, smart city dashboards, land-use analysis systems, and urban growth modelling.",
+            "howItCanHelpSolveProblems": "It can help communities plan better, improve service delivery, reduce congestion, and support safer, more organised urban growth.",
+            "thinkAboutIt": "How could urban-planning AI improve township or city development in Africa?",
+            "aiType": "Smart City AI",
+            "bestFor": "Urban planning, infrastructure design and service improvement",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_28.png",
+            "id": 28,
+            "cardNumber": "28",
+            "cardLabel": "AI CARD 28",
+            "title": "AI THAT DETECTS WASTE PROBLEMS",
+            "subtitle": "WASTE MANAGEMENT AI",
+            "description": "This type of AI tracks waste levels in bins, identifies sanitation issues, and helps improve waste collection systems for cleaner, healthier communities.",
+            "whatThisAiCanDo": "Tracks garbage levels, identifies waste hotspots, supports collection planning, and improves route efficiency.",
+            "examples": "Smart waste bins, waste monitoring dashboards, collection route optimisation tools, and sanitation alert systems.",
+            "howItCanHelpSolveProblems": "It can help keep communities cleaner, improve waste collection, reduce illegal dumping, and support healthier environments.",
+            "thinkAboutIt": "How could waste-management AI help keep your community cleaner and safer?",
+            "aiType": "Environmental Service AI",
+            "bestFor": "Waste tracking, sanitation planning and clean communities",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_29.png",
+            "id": 29,
+            "cardNumber": "29",
+            "cardLabel": "AI CARD 29",
+            "title": "AI THAT CREATES VIDEOS",
+            "subtitle": "VIDEO GENERATION AI",
+            "description": "This type of AI creates videos from text, images, or prompts. It helps users turn ideas into engaging visual stories and supports fast, affordable creation of content for learning, marketing, or communication.",
+            "whatThisAiCanDo": "Generates videos, turns ideas into visual content, supports editing workflows, and helps create educational or marketing media faster.",
+            "examples": "Educational video generation, promo video tools, animation-from-text systems, and AI editing assistants.",
+            "howItCanHelpSolveProblems": "It can help teachers create lessons, help businesses market affordably, support awareness campaigns, and expand creative communication.",
+            "thinkAboutIt": "How could video-generation AI help teachers, entrepreneurs, or community organisations communicate better?",
+            "aiType": "Creative Media AI",
+            "bestFor": "Video creation, storytelling and communication support",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        },
+        {
+            "fileName": "AI_30.png",
+            "id": 30,
+            "cardNumber": "30",
+            "cardLabel": "AI CARD 30",
+            "title": "AI THAT SOLVES COMPLEX PROBLEMS",
+            "subtitle": "ADVANCED DECISION AI",
+            "description": "This type of AI analyses massive amounts of data, models complex systems, and supports high-level decision-making in areas such as climate, economics, health, and development.",
+            "whatThisAiCanDo": "Analyses large datasets, supports modelling, identifies patterns, compares options, and helps decision-makers tackle difficult challenges.",
+            "examples": "Climate modelling, economic forecasting, policy analysis, systems simulation, and large-scale planning tools.",
+            "howItCanHelpSolveProblems": "It can help governments, organisations, and communities make better strategic decisions and respond more effectively to complex development challenges.",
+            "thinkAboutIt": "How could advanced AI help Africa solve large-scale problems more wisely and inclusively?",
+            "aiType": "Strategic AI",
+            "bestFor": "Complex analysis, modelling and decision support",
+            "footer": {
+                "author": "Professor Abejide Ade-Ibijola",
+                "organisation": "GRIT Lab Africa",
+                "website": "www.gritlabafrica.org"
+            }
+        }
+    ]
+}
