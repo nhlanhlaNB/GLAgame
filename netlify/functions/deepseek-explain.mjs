@@ -503,12 +503,12 @@ function buildSafeFallbackEvaluation({ problemCard, selectedAiCards = [], select
 }
 
 
-async function callScoringengine({ apiKey, model, prompt }) {
+async function callDeepSeek({ apiKey, model, prompt }) {
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), 22000)
 
   try {
-    const response = await fetch('https://api.deepseek.com/chat/completions', {
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -559,6 +559,81 @@ async function callScoringengine({ apiKey, model, prompt }) {
   }
 }
 
+async function callHF({ apiKey, model, prompt }) {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 22000)
+
+  try {
+    const response = await fetch('https://router.huggingface.co/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`
+      },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model,
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You are the GRIT Lab Africa AI card game evaluator. Score strictly using the seven-area rubric. Return compact valid JSON only.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        response_format: {
+          type: 'json_object'
+        },
+        temperature: 0.1,
+        max_tokens: 1200
+      })
+    })
+
+    const rawText = await response.text()
+
+    let data = {}
+
+    try {
+      data = JSON.parse(rawText)
+    } catch {
+      data = { rawText }
+    }
+
+    return { response, data }
+  } catch (error) {
+    if (error?.name === 'AbortError') {
+      const response = new Response(JSON.stringify({ message: 'The scoring engine took too long to respond.' }), { status: 504 })
+      return { response, data: { message: 'The scoring engine took too long to respond.' } }
+    }
+
+    throw error
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
+async function callAI({ prompt, deepseekKey, deepseekModel, hfKey, hfModel }) {
+  const dsConfigured = deepseekKey && deepseekKey !== 'paste_your_real_deepseek_api_key_here'
+
+  if (dsConfigured) {
+    try {
+      const result = await callDeepSeek({ apiKey: deepseekKey, model: deepseekModel, prompt })
+      return { source: 'deepseek', ...result }
+    } catch (error) {
+      console.error('DeepSeek failed, falling back to Hugging Face:', {
+        name: error?.name,
+        message: error?.message,
+        status: error?.status
+      })
+    }
+  }
+
+  return { source: 'huggingface', ...(await callHF({ apiKey: hfKey, model: hfModel, prompt })) }
+}
+
 export async function handler(event) {
   if (event.httpMethod !== 'POST') {
     return jsonResponse(405, {
@@ -567,13 +642,15 @@ export async function handler(event) {
   }
 
   try {
-    const apiKey = process.env.DEEPSEEK_API_KEY
-    const model = process.env.DEEPSEEK_MODEL || 'deepseek-chat'
+    const deepseekKey = process.env.DEEPSEEK_API_KEY
+    const deepseekModel = process.env.DEEPSEEK_MODEL || 'deepseek-v4-flash'
+    const hfKey = process.env.HF_API_KEY
+    const hfModel = process.env.HF_MODEL || 'Qwen/Qwen2.5-7B-Instruct:featherless-ai'
 
-    if (!apiKey) {
+    if (!hfKey) {
       return jsonResponse(500, {
         error:
-          'the scoring engine API key has not been configured. Add DEEPSEEK_API_KEY in Netlify environment variables.'
+          'The Hugging Face API key has not been configured. Add HF_API_KEY in Netlify environment variables.'
       })
     }
 
@@ -704,17 +781,23 @@ Return exactly this JSON shape using double quotes for every key and string:
 `
 
     let content = ''
-    let deepseekError = ''
+    let aiError = ''
+    let usedSource = ''
 
     for (let attempt = 1; attempt <= 1; attempt += 1) {
-      const { response, data } = await callScoringengine({
-        apiKey,
-        model,
-        prompt
+      const result = await callAI({
+        prompt,
+        deepseekKey,
+        deepseekModel,
+        hfKey,
+        hfModel
       })
 
+      usedSource = result.source
+      const { response, data } = result
+
       if (!response.ok) {
-        deepseekError =
+        aiError =
           data?.error?.message ||
           data?.message ||
           'The scoring engine could not score the explanation right now.'
@@ -732,7 +815,7 @@ Return exactly this JSON shape using double quotes for every key and string:
     if (!content) {
       return jsonResponse(502, {
         error:
-          deepseekError ||
+          aiError ||
           'The scoring engine returned an empty response. Please try again in a few seconds.'
       })
     }
