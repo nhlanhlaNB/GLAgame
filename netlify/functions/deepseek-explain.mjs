@@ -706,7 +706,10 @@ async function callHF({ apiKey, model, prompt }) {
 async function callAI({ prompt, ollamaEndpoint, ollamaModel, deepseekKey, deepseekModel, hfKey, hfModel }) {
   try {
     const result = await callOllama({ endpoint: ollamaEndpoint, model: ollamaModel, prompt })
-    return { source: 'ollama', ...result }
+    if (result.response.ok) {
+      return { source: 'ollama', ...result }
+    }
+    console.error('Ollama returned a non-OK response:', result.response.status)
   } catch (error) {
     console.error('Ollama failed, falling back to DeepSeek:', {
       name: error?.name,
@@ -719,7 +722,10 @@ async function callAI({ prompt, ollamaEndpoint, ollamaModel, deepseekKey, deepse
   if (dsConfigured) {
     try {
       const result = await callDeepSeek({ apiKey: deepseekKey, model: deepseekModel, prompt })
-      return { source: 'deepseek', ...result }
+      if (result.response.ok) {
+        return { source: 'deepseek', ...result }
+      }
+      console.error('DeepSeek returned a non-OK response:', result.response.status)
     } catch (error) {
       console.error('DeepSeek failed, falling back to Hugging Face:', {
         name: error?.name,
