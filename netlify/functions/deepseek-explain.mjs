@@ -503,6 +503,94 @@ function buildSafeFallbackEvaluation({ problemCard, selectedAiCards = [], select
 }
 
 
+async function callOllama({ endpoint, model, prompt }) {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 22000)
+
+  try {
+    const response = await fetch(`${endpoint}/api/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true'
+      },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model,
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You are the GRIT Lab Africa AI card game evaluator. Score strictly using the seven-area rubric. Return compact valid JSON only.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        stream: false,
+        temperature: 0.1,
+        options: {
+          num_predict: 1200
+        },
+        format: 'json'
+      })
+    })
+
+    const rawText = await response.text()
+
+    let data = {}
+
+    try {
+      data = JSON.parse(rawText)
+    } catch {
+      data = { rawText }
+    }
+
+    if (response.ok) {
+      const content = data?.message?.content
+
+      if (typeof content !== 'string' || content.length === 0) {
+        const failureResponse = new Response(
+          JSON.stringify({ message: 'The scoring engine returned an empty response.' }),
+          { status: 502 }
+        )
+        return { response: failureResponse, data: { message: 'The scoring engine returned an empty response.' } }
+      }
+
+      data = {
+        choices: [
+          {
+            index: 0,
+            message: { role: 'assistant', content },
+            finish_reason: data.done_reason === 'length' ? 'length' : 'stop'
+          }
+        ],
+        model: data.model || model,
+        usage:
+          data.prompt_eval_count != null
+            ? {
+                prompt_tokens: data.prompt_eval_count,
+                completion_tokens: data.eval_count ?? 0,
+                total_tokens: (data.prompt_eval_count ?? 0) + (data.eval_count ?? 0)
+              }
+            : undefined
+      }
+    }
+
+    return { response, data }
+  } catch (error) {
+    if (error?.name === 'AbortError') {
+      const response = new Response(JSON.stringify({ message: 'The scoring engine took too long to respond.' }), { status: 504 })
+      return { response, data: { message: 'The scoring engine took too long to respond.' } }
+    }
+
+    throw error
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
 async function callDeepSeek({ apiKey, model, prompt }) {
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), 22000)
@@ -615,7 +703,17 @@ async function callHF({ apiKey, model, prompt }) {
   }
 }
 
-async function callAI({ prompt, deepseekKey, deepseekModel, hfKey, hfModel }) {
+async function callAI({ prompt, ollamaEndpoint, ollamaModel, deepseekKey, deepseekModel, hfKey, hfModel }) {
+  try {
+    const result = await callOllama({ endpoint: ollamaEndpoint, model: ollamaModel, prompt })
+    return { source: 'ollama', ...result }
+  } catch (error) {
+    console.error('Ollama failed, falling back to DeepSeek:', {
+      name: error?.name,
+      message: error?.message
+    })
+  }
+
   const dsConfigured = deepseekKey && deepseekKey !== 'paste_your_real_deepseek_api_key_here'
 
   if (dsConfigured) {
@@ -642,17 +740,12 @@ export async function handler(event) {
   }
 
   try {
+    const ollamaEndpoint = process.env.OLLAMA_ENDPOINT || 'https://sinister-attire-hypnotist.ngrok-free.dev'
+    const ollamaModel = process.env.OLLAMA_MODEL || 'qwen2.5-coder:7b'
     const deepseekKey = process.env.DEEPSEEK_API_KEY
     const deepseekModel = process.env.DEEPSEEK_MODEL || 'deepseek-v4-flash'
     const hfKey = process.env.HF_API_KEY
     const hfModel = process.env.HF_MODEL || 'Qwen/Qwen2.5-7B-Instruct:featherless-ai'
-
-    if (!hfKey) {
-      return jsonResponse(500, {
-        error:
-          'The Hugging Face API key has not been configured. Add HF_API_KEY in Netlify environment variables.'
-      })
-    }
 
     const body = JSON.parse(event.body || '{}')
 
@@ -787,6 +880,8 @@ Return exactly this JSON shape using double quotes for every key and string:
     for (let attempt = 1; attempt <= 1; attempt += 1) {
       const result = await callAI({
         prompt,
+        ollamaEndpoint,
+        ollamaModel,
         deepseekKey,
         deepseekModel,
         hfKey,
