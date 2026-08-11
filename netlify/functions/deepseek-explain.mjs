@@ -531,7 +531,7 @@ async function callOllama({ endpoint, model, prompt }) {
         stream: false,
         temperature: 0.1,
         options: {
-          num_predict: 1200
+          num_predict: 400
         },
         format: 'json'
       })
