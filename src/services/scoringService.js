@@ -1,5 +1,5 @@
 const SCORING_ENDPOINT = '/api/deepseek/explain'
-const SCORING_TIMEOUT_MS = 25000
+const SCORING_TIMEOUT_MS = 45000
 
 async function postScore(endpoint, payload, timeoutMs = SCORING_TIMEOUT_MS) {
   const controller = new AbortController()

@@ -505,7 +505,7 @@ function buildSafeFallbackEvaluation({ problemCard, selectedAiCards = [], select
 
 async function callOllama({ endpoint, model, prompt }) {
   const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 22000)
+  const timeout = setTimeout(() => controller.abort(), 45000)
 
   try {
     const response = await fetch(`${endpoint}/api/chat`, {
@@ -530,6 +530,7 @@ async function callOllama({ endpoint, model, prompt }) {
         ],
         stream: false,
         temperature: 0.1,
+        keep_alive: '30m',
         options: {
           num_predict: 400
         },

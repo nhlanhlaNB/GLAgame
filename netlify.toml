@@ -8,6 +8,9 @@
 [functions]
   directory = "netlify/functions"
 
+[functions."deepseek-explain"]
+  timeout = 26
+
 [[redirects]]
   from = "/api/deepseek/explain"
   to = "/.netlify/functions/deepseek-explain"
