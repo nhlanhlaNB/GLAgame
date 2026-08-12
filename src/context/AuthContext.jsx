@@ -28,6 +28,25 @@ const userGameDefaults = {
   activeSessionId: ''
 }
 
+function timestampToMillis(value) {
+  if (!value) return 0
+
+  if (typeof value.toMillis === 'function') {
+    return value.toMillis()
+  }
+
+  if (value.seconds) {
+    return value.seconds * 1000
+  }
+
+  if (value instanceof Date) {
+    return value.getTime()
+  }
+
+  const parsed = Date.parse(value)
+  return Number.isFinite(parsed) ? parsed : 0
+}
+
 function getNameParts(displayName, email) {
   if (displayName) {
     const parts = displayName.trim().split(' ')
@@ -109,7 +128,12 @@ async function ensureUserDocument(user) {
     { merge: true }
   )
 
-  if (!userData.location) {
+  const shouldRefreshLocation =
+    !userData.location ||
+    !userData.locationUpdatedAt ||
+    Date.now() - timestampToMillis(userData.locationUpdatedAt) > 60 * 60 * 1000
+
+  if (shouldRefreshLocation) {
     capturePlayerLocation(user.uid).catch(() => {})
   }
 }
