@@ -229,7 +229,7 @@ function GoogleAnalyticsOverview({ gaData }) {
   )
 }
 
-function AdminAnalyticsDashboard() {
+function AdminAnalyticsDashboard({ adminUser, onLogout }) {
   const [data, setData] = useState(null)
   const [gaData, setGaData] = useState(null)
   const [selectedChart, setSelectedChart] = useState('area')
@@ -466,9 +466,15 @@ function AdminAnalyticsDashboard() {
           </p>
         </div>
 
-        <button type="button" className="adaButton" onClick={loadData}>
-          Refresh
-        </button>
+        <div className="adaHeaderActions">
+          {adminUser?.email ? <span className="adaSignedIn">{adminUser.email}</span> : null}
+          <button type="button" className="adaButton" onClick={loadData}>
+            Refresh
+          </button>
+          <button type="button" className="adaSignOut" onClick={onLogout}>
+            Sign Out
+          </button>
+        </div>
       </header>
 
       <MetricStrip metrics={data.metrics} />
@@ -604,6 +610,23 @@ const dashboardCss = `
 
   .adaMuted { margin: 0; color: #7a6248; line-height: 1.6; }
 
+  .adaHeaderActions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .adaSignedIn {
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(139, 92, 40, 0.16);
+    color: #5c3512;
+    font-size: 0.78rem;
+    font-weight: 850;
+  }
+
   .adaButton {
     border: 1px solid rgba(139, 92, 40, 0.22);
     border-radius: 999px;
@@ -612,6 +635,17 @@ const dashboardCss = `
     background: rgba(255, 255, 255, 0.72);
     color: #5c3512;
     font-weight: 850;
+  }
+
+  .adaSignOut {
+    border: 0;
+    border-radius: 999px;
+    padding: 11px 18px;
+    cursor: pointer;
+    font-weight: 850;
+    background: linear-gradient(135deg, #9a6a22, #5c3512);
+    color: #fff8eb;
+    box-shadow: 0 12px 28px rgba(92, 53, 18, 0.24);
   }
 
   .adaMetricGrid {
