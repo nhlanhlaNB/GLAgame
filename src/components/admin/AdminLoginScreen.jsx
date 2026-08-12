@@ -1,32 +1,43 @@
 import { useState } from 'react'
-import { ADMIN_CREDENTIALS, isValidAdminLogin } from './adminCredentials'
+import { loginAdmin } from '../../services/admin/adminAuthService'
+
+const ADMIN_ACCESS_CODE = 'Catchthefish'
 
 function AdminLoginScreen({ onLogin }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [accessCode, setAccessCode] = useState('')
   const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
 
-    const valid = isValidAdminLogin({
-      email,
-      password,
-      accessCode
-    })
-
-    if (!valid) {
-      setError(
-        'Incorrect admin details. Use email admin@gritlabafrica.org, password GLA-admin-2026, and access code GLA-ADMIN.'
-      )
+    if (!email.trim() || !password) {
+      setError('Enter your admin email and password.')
       return
     }
 
-    setError('')
-    onLogin({ email: ADMIN_CREDENTIALS.email, role: 'GRIT Lab Africa Administrator' })
-  }
+    if (String(accessCode).trim() !== ADMIN_ACCESS_CODE) {
+      setError('Incorrect admin access code.')
+      return
+    }
 
+    setSubmitting(true)
+    setError('')
+
+    try {
+      const adminUser = await loginAdmin({ email, password })
+      onLogin(adminUser)
+    } catch (err) {
+      setError(
+        err.message ||
+          'Could not sign in. Check your email and password and try again.'
+      )
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   return (
     <main className="adminLoginPage">
@@ -39,8 +50,8 @@ function AdminLoginScreen({ onLogin }) {
             <p className="adminEyebrow">Admin login</p>
             <h1>GRIT Lab Africa Admin Portal</h1>
             <p>
-              Sign in as an administrator to manage cards, rubrics, certificate
-              templates, language versions, analytics and reports.
+              Sign in with your administrator account to manage cards, rubrics,
+              certificate templates, language versions, analytics and reports.
             </p>
           </div>
         </div>
@@ -48,23 +59,45 @@ function AdminLoginScreen({ onLogin }) {
         <form onSubmit={handleSubmit} className="adminLoginForm">
           <label>
             Admin email
-            <input value={email} onChange={(event) => setEmail(event.target.value)} placeholder="admin@gritlabafrica.org" autoComplete="username" />
+            <input
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="admin@gritlabafrica.org"
+              autoComplete="username"
+            />
           </label>
 
           <label>
             Password
-            <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" placeholder="Enter admin password" autoComplete="current-password" />
+            <input
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              type="password"
+              placeholder="Enter admin password"
+              autoComplete="current-password"
+            />
           </label>
 
           <label>
             Access code
-            <input value={accessCode} onChange={(event) => setAccessCode(event.target.value)} placeholder="Enter access code" autoComplete="off" />
+            <input
+              value={accessCode}
+              onChange={(event) => setAccessCode(event.target.value)}
+              placeholder="Enter access code"
+              autoComplete="off"
+            />
           </label>
 
           {error && <p className="adminLoginError">{error}</p>}
 
           <div className="adminLoginActions">
-            <button type="submit" className="adminPrimaryButton">Login as Admin</button>
+            <button
+              type="submit"
+              className="adminPrimaryButton"
+              disabled={submitting}
+            >
+              {submitting ? 'Signing in...' : 'Login as Admin'}
+            </button>
           </div>
         </form>
       </section>
@@ -184,6 +217,11 @@ const loginCss = `
     background: linear-gradient(135deg, #9a6a22, #5c3512);
     color: #fff8eb;
     box-shadow: 0 14px 30px rgba(92, 53, 18, 0.22);
+  }
+
+  .adminPrimaryButton:disabled {
+    opacity: 0.6;
+    cursor: wait;
   }
 
   @media (max-width: 620px) {

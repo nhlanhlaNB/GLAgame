@@ -26,3 +26,8 @@ dist-ssr
 .netlify
 dist
 node_modules.env
+
+# Firebase service account / secrets (never commit)
+serviceAccount.json
+*.service-account.json
+.firebaserc

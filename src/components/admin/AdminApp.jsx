@@ -1,6 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AdminLoginScreen from './AdminLoginScreen'
 import AdminLayout from './AdminLayout'
+import {
+  getSavedAdminSession,
+  logoutAdmin,
+  onAdminAuthStateChanged
+} from '../../services/admin/adminAuthService'
 import AdminDashboardScreen from './AdminDashboardScreen'
 import AdminProblemCardsScreen from './AdminProblemCardsScreen'
 import AdminAiCardsScreen from './AdminAiCardsScreen'
@@ -9,6 +14,7 @@ import AdminScoringRubricScreen from './AdminScoringRubricScreen'
 import AdminAssetTemplateScreen from './AdminAssetTemplateScreen'
 import AdminPlayerAnalyticsScreen from './AdminPlayerAnalyticsScreen'
 import AdminAnalyticsScreen from './AdminAnalyticsScreen'
+import AdminGoogleAnalyticsScreen from './AdminGoogleAnalyticsScreen'
 import AdminReportsScreen from './AdminReportsScreen'
 import AdminRewardsManagementScreen from './AdminRewardsManagementScreen'
 import AdminGlobalSettingsScreen from './AdminGlobalSettingsScreen'
@@ -24,7 +30,28 @@ import AdminFeedbackInboxScreen from './AdminFeedbackInboxScreen'
 
 function AdminApp() {
   const [adminUser, setAdminUser] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
   const [activeScreen, setActiveScreen] = useState('dashboard')
+
+  useEffect(() => {
+    setAdminUser(getSavedAdminSession())
+
+    const unsubscribe = onAdminAuthStateChanged((sessionUser) => {
+      setAdminUser(sessionUser)
+      setAuthLoading(false)
+    })
+
+    return unsubscribe
+  }, [])
+
+  if (authLoading) {
+    return (
+      <main className="adminLoginPage">
+        <style>{loginPageCss}</style>
+        <p>Checking admin session...</p>
+      </main>
+    )
+  }
 
   if (!adminUser) {
     return <AdminLoginScreen onLogin={setAdminUser} />
@@ -35,7 +62,10 @@ function AdminApp() {
       adminUser={adminUser}
       activeScreen={activeScreen}
       onScreenChange={setActiveScreen}
-      onLogout={() => setAdminUser(null)}
+      onLogout={() => {
+        logoutAdmin()
+        setAdminUser(null)
+      }}
     >
       {activeScreen === 'dashboard' && <AdminDashboardScreen />}
       {activeScreen === 'problem-cards' && <AdminProblemCardsScreen />}
@@ -57,9 +87,23 @@ function AdminApp() {
       {activeScreen === 'card-images' && <AdminAssetTemplateScreen type="card-images" />}
       {activeScreen === 'certificate-templates' && <AdminAssetTemplateScreen type="certificate" />}
       {activeScreen === 'analytics' && <AdminAnalyticsScreen />}
+      {activeScreen === 'google-analytics' && <AdminGoogleAnalyticsScreen />}
       {activeScreen === 'reports' && <AdminReportsScreen />}
     </AdminLayout>
   )
 }
 
 export default AdminApp
+
+const loginPageCss = `
+  .adminLoginPage {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    color: #5c3512;
+    font-weight: 850;
+    background:
+      radial-gradient(circle at top left, rgba(244, 210, 138, 0.24), transparent 28rem),
+      linear-gradient(135deg, rgba(255, 248, 235, 0.92), rgba(232, 214, 170, 0.74));
+  }
+`

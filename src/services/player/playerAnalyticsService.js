@@ -4,6 +4,7 @@ import {
   now,
   playerCollection
 } from './playerDataService'
+import { logAnalyticsEvent } from '../analyticsService'
 
 function cleanData(value) {
   if (Array.isArray(value)) {
@@ -43,6 +44,13 @@ export async function logPlayerEvent({
     metadata: cleanData(metadata),
     isSchema: false,
     createdAt: now()
+  })
+
+  logAnalyticsEvent(eventName, {
+    userId: userId || '',
+    eventType: eventType || '',
+    screenName: screenName || '',
+    ...(metadata || {})
   })
 
   return eventRef.id

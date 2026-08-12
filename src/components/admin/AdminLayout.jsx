@@ -24,6 +24,7 @@ function AdminLayout({ adminUser, activeScreen, onScreenChange, onLogout, childr
     { id: 'card-images', label: t('cardImages', 'Card Images'), icon: '🖼️', description: 'Assets' },
     { id: 'certificate-templates', label: t('certificates', 'Certificates'), icon: '🎓', description: 'Templates' },
     { id: 'analytics', label: t('analytics', 'Analytics Dashboard'), icon: '📈', description: 'Impact' },
+    { id: 'google-analytics', label: t('googleAnalytics', 'Google Analytics'), icon: '🔎', description: 'Events' },
     { id: 'reports', label: t('reports', 'Reports'), icon: '📤', description: 'Export' }
   ]
 

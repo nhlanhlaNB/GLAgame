@@ -1,0 +1,392 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ------------------------------------------------------------------
+    // Helpers
+    // ------------------------------------------------------------------
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    // Owned by the current user via the document ID (e.g. users/<uid>).
+    function isOwnerDoc() {
+      return isSignedIn() && resource.id == request.auth.uid;
+    }
+
+    // Owned by the current user via an owner field on the existing document.
+    function isOwnerData() {
+      return isSignedIn() && (
+        resource.data.userId == request.auth.uid ||
+        resource.data.uid == request.auth.uid ||
+        resource.data.playerId == request.auth.uid ||
+        resource.data.voterUserId == request.auth.uid ||
+        resource.data.fromUserId == request.auth.uid ||
+        resource.data.recipientUserId == request.auth.uid
+      );
+    }
+
+    // The incoming write is owned by the current user.
+    function isOwnerDataNew() {
+      return isSignedIn() && (
+        request.resource.data.userId == request.auth.uid ||
+        request.resource.data.uid == request.auth.uid ||
+        request.resource.data.playerId == request.auth.uid ||
+        request.resource.data.voterUserId == request.auth.uid ||
+        request.resource.data.fromUserId == request.auth.uid ||
+        request.resource.data.recipientUserId == request.auth.uid
+      );
+    }
+
+    // ------------------------------------------------------------------
+    // Admin-only collections
+    // ------------------------------------------------------------------
+
+    match /adminUsers/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /adminActivityLogs/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /adminReports/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /walletAdjustments/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    // ------------------------------------------------------------------
+    // Analytics event log: players create their own events, admins read all
+    // ------------------------------------------------------------------
+
+    match /analyticsEvents/{docId} {
+      allow create: if isOwnerDataNew();
+      allow read: if isAdmin() || isOwnerData();
+      allow update: if isAdmin() || isOwnerData();
+      allow delete: if isAdmin();
+    }
+
+    // ------------------------------------------------------------------
+    // User data: anyone signed in can read, but only the owner can write
+    // (admins can do everything). Reads stay signed-in so the global
+    // leaderboard, multiplayer and admin reporting keep working.
+    // ------------------------------------------------------------------
+
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create, update: if request.auth.uid == userId;
+      allow delete: if isAdmin();
+    }
+
+    match /attempts/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isOwnerDataNew();
+      allow update: if isAdmin() || isOwnerData();
+      allow delete: if isAdmin();
+    }
+
+    match /scores/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isOwnerDataNew();
+      allow update: if isAdmin() || isOwnerData();
+      allow delete: if isAdmin();
+    }
+
+    match /subScores/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isOwnerDataNew();
+      allow update: if isAdmin() || isOwnerData();
+      allow delete: if isAdmin();
+    }
+
+    match /hintRequests/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isOwnerDataNew();
+      allow update: if isAdmin() || isOwnerData();
+      allow delete: if isAdmin();
+    }
+
+    match /gameSessions/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isOwnerDataNew();
+      allow update: if isAdmin() || isOwnerData();
+      allow delete: if isAdmin();
+    }
+
+    match /selectedProblemStacks/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isOwnerDataNew();
+      allow update: if isAdmin() || isOwnerData();
+      allow delete: if isAdmin();
+    }
+
+    match /glaCoinTransactions/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isOwnerDataNew();
+      allow update: if isAdmin() || isOwnerData();
+      allow delete: if isAdmin();
+    }
+
+    match /certificates/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isOwnerDataNew();
+      allow update: if isAdmin() || isOwnerData();
+      allow delete: if isAdmin();
+    }
+
+    match /playerAchievements/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isOwnerDataNew();
+      allow update: if isAdmin() || isOwnerData();
+      allow delete: if isAdmin();
+    }
+
+    match /userCardSkins/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isOwnerDataNew();
+      allow update: if isAdmin() || isOwnerData();
+      allow delete: if isAdmin();
+    }
+
+    match /feedback/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isOwnerDataNew();
+      allow update: if isAdmin() || isOwnerData();
+      allow delete: if isAdmin();
+    }
+
+    match /userFeedback/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isOwnerDataNew();
+      allow update: if isAdmin() || isOwnerData();
+      allow delete: if isAdmin();
+    }
+
+    match /deepSeekEvaluations/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isOwnerDataNew();
+      allow update: if isAdmin() || isOwnerData();
+      allow delete: if isAdmin();
+    }
+
+    match /rewardClaims/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isOwnerDataNew();
+      allow update: if isAdmin() || isOwnerData();
+      allow delete: if isAdmin();
+    }
+
+    // ------------------------------------------------------------------
+    // Content: anyone signed in can read (and seed schema rows), but only
+    // admins can update or delete real content.
+    // ------------------------------------------------------------------
+
+    match /problemCards/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /aiCards/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /scoringRubrics/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /achievements/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /levels/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /cardSkins/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /languageVersions/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /cardTranslations/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /uiTranslations/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /appSettings/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /launchSettings/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /publicLaunchEvents/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /sponsorRewards/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /leaderboards/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /aiScoringReviews/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /cardReviewNotes/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    // ------------------------------------------------------------------
+    // Collaborative multiplayer: signed-in players can read and create;
+    // owners/admins can update; only admins delete.
+    // ------------------------------------------------------------------
+
+    match /multiplayerRooms/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isAdmin();
+    }
+
+    match /roomPlayers/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() || isOwnerData();
+      allow delete: if isAdmin() || isOwnerData();
+    }
+
+    match /teams/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() || isOwnerData();
+      allow delete: if isAdmin() || isOwnerData();
+    }
+
+    match /teamSessions/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() || isOwnerData();
+      allow delete: if isAdmin() || isOwnerData();
+    }
+
+    match /debates/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() || isOwnerData();
+      allow delete: if isAdmin() || isOwnerData();
+    }
+
+    match /debateVotes/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() || isOwnerData();
+      allow delete: if isAdmin() || isOwnerData();
+    }
+
+    match /tournaments/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() || isOwnerData();
+      allow delete: if isAdmin() || isOwnerData();
+    }
+
+    match /tournamentPlayers/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() || isOwnerData();
+      allow delete: if isAdmin() || isOwnerData();
+    }
+
+    match /playerNotifications/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() || isOwnerData();
+      allow delete: if isAdmin() || isOwnerData();
+    }
+
+    match /playerConnections/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() || isOwnerData();
+      allow delete: if isAdmin() || isOwnerData();
+    }
+
+    match /playerConnectionRequests/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() || isOwnerData();
+      allow delete: if isAdmin() || isOwnerData();
+    }
+
+    match /playerPresence/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() || isOwnerData();
+      allow delete: if isAdmin() || isOwnerData();
+    }
+
+    match /multiplayerRoomEvents/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() || isOwnerData();
+      allow delete: if isAdmin() || isOwnerData();
+    }
+
+    match /multiplayerRoomRequests/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() || isOwnerData();
+      allow delete: if isAdmin() || isOwnerData();
+    }
+  }
+}

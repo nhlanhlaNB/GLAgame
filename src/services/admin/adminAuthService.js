@@ -1,11 +1,10 @@
 import {
-  doc,
-  getDoc,
-  serverTimestamp,
-  setDoc
-} from 'firebase/firestore'
-import { db } from '../firebaseService'
-import * as adminCredentialsModule from '../../components/admin/adminCredentials'
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut
+} from 'firebase/auth'
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
+import { auth, db } from '../../firebase'
 
 const ADMIN_USERS_COLLECTION = 'adminUsers'
 const ADMIN_SESSION_KEY = 'gla_admin_session'
@@ -18,211 +17,169 @@ function cleanEmail(value) {
   return cleanText(value).toLowerCase()
 }
 
-function getAdminCredentials() {
-  const source =
-    adminCredentialsModule.adminCredentials ||
-    adminCredentialsModule.ADMIN_CREDENTIALS ||
-    adminCredentialsModule.default ||
-    {}
-
-  return {
-    email: cleanEmail(
-      source.email ||
-        source.adminEmail ||
-        adminCredentialsModule.ADMIN_EMAIL ||
-        'admin@gritlabafrica.org'
-    ),
-    password: cleanText(
-      source.password ||
-        source.adminPassword ||
-        adminCredentialsModule.ADMIN_PASSWORD ||
-        'GLA-admin-2026'
-    ),
-    accessCode: cleanText(
-      source.accessCode ||
-        source.adminAccessCode ||
-        source.code ||
-        adminCredentialsModule.ADMIN_ACCESS_CODE ||
-        'GLA-ADMIN'
-    )
-  }
-}
-
-function getAdminDocumentId(email) {
-  return cleanEmail(email)
-}
-
 function removeFirestoreDates(adminUser) {
   return {
-    adminId: adminUser.adminId || '',
+    adminId: adminUser.adminId || adminUser.uid || '',
+    uid: adminUser.uid || adminUser.adminId || '',
     email: adminUser.email || '',
     fullName: adminUser.fullName || '',
     role: adminUser.role || 'admin',
     accessLevel: adminUser.accessLevel || 'super_admin',
     accountStatus: adminUser.accountStatus || 'active',
     permissions: adminUser.permissions || [],
-    loginProvider: adminUser.loginProvider || 'static-demo'
+    loginProvider: adminUser.loginProvider || 'firebase-auth'
   }
 }
 
-export async function getAdminUserByEmail(email) {
-  const cleanedEmail = cleanEmail(email)
+async function getAdminProfile(user) {
+  if (!user) return null
 
-  if (!cleanedEmail) {
-    return null
-  }
+  const uidRef = doc(db, ADMIN_USERS_COLLECTION, user.uid)
+  const uidSnapshot = await getDoc(uidRef)
 
-  const adminDocRef = doc(
-    db,
-    ADMIN_USERS_COLLECTION,
-    getAdminDocumentId(cleanedEmail)
-  )
-
-  const adminSnapshot = await getDoc(adminDocRef)
-
-  if (!adminSnapshot.exists()) {
-    return null
-  }
-
-  return {
-    id: adminSnapshot.id,
-    ...adminSnapshot.data()
-  }
-}
-
-export async function createOrUpdateAdminUser(adminDetails = {}) {
-  const credentials = getAdminCredentials()
-
-  const email = cleanEmail(adminDetails.email || credentials.email)
-  const adminId = getAdminDocumentId(email)
-
-  const fullName =
-    cleanText(adminDetails.fullName) || 'GRIT Lab Africa Admin'
-
-  const adminDocRef = doc(db, ADMIN_USERS_COLLECTION, adminId)
-  const existingAdmin = await getDoc(adminDocRef)
-
-  const adminData = {
-    adminId,
-    email,
-    fullName,
-    role: 'admin',
-    accessLevel: adminDetails.accessLevel || 'super_admin',
-    accountStatus: adminDetails.accountStatus || 'active',
-    permissions: adminDetails.permissions || [
-      'admin.dashboard.view',
-      'admin.cards.manage',
-      'admin.rubrics.manage',
-      'admin.translations.manage',
-      'admin.scoringReviews.manage',
-      'admin.analytics.view',
-      'admin.users.view',
-      'admin.settings.manage',
-      'admin.feedback.manage'
-    ],
-    loginProvider: 'static-demo',
-    updatedAt: serverTimestamp()
-  }
-
-  if (!existingAdmin.exists()) {
-    await setDoc(adminDocRef, {
-      ...adminData,
-      createdAt: serverTimestamp(),
-      lastLoginAt: null
-    })
-
+  if (uidSnapshot.exists()) {
     return {
-      id: adminId,
-      ...adminData
+      id: uidSnapshot.id,
+      ...uidSnapshot.data(),
+      uid: user.uid
     }
   }
 
-  await setDoc(
-    adminDocRef,
-    {
-      ...adminData
-    },
-    { merge: true }
-  )
+  const emailRef = doc(db, ADMIN_USERS_COLLECTION, cleanEmail(user.email))
+  const emailSnapshot = await getDoc(emailRef)
 
-  return {
-    id: adminId,
-    ...existingAdmin.data(),
-    ...adminData
+  if (emailSnapshot.exists()) {
+    const data = emailSnapshot.data()
+
+    await setDoc(
+      uidRef,
+      {
+        ...data,
+        uid: user.uid,
+        updatedAt: serverTimestamp()
+      },
+      { merge: true }
+    )
+
+    return {
+      id: user.uid,
+      ...data,
+      uid: user.uid
+    }
+  }
+
+  return null
+}
+
+async function hasAdminClaim(user) {
+  try {
+    const token = await user.getIdTokenResult()
+    return token.claims && token.claims.admin === true
+  } catch {
+    return false
   }
 }
 
-export async function updateAdminLastLogin(email) {
-  const cleanedEmail = cleanEmail(email)
+export async function loginAdmin({ email, password }) {
+  const enteredEmail = cleanEmail(email)
 
-  if (!cleanedEmail) {
-    throw new Error('Admin email is required.')
+  if (!enteredEmail || !password) {
+    throw new Error('Admin email and password are required.')
   }
 
-  const adminDocRef = doc(
-    db,
-    ADMIN_USERS_COLLECTION,
-    getAdminDocumentId(cleanedEmail)
+  const userCredential = await signInWithEmailAndPassword(
+    auth,
+    enteredEmail,
+    password
   )
 
+  const user = userCredential.user
+  const [adminUser, hasClaim] = await Promise.all([
+    getAdminProfile(user),
+    hasAdminClaim(user)
+  ])
+
+  if (!adminUser && !hasClaim) {
+    await signOut(auth)
+    throw new Error('This account is not registered as an administrator.')
+  }
+
+  const profile = adminUser || {
+    uid: user.uid,
+    email: user.email,
+    fullName: user.displayName || 'GRIT Lab Africa Admin',
+    role: 'admin',
+    accessLevel: 'super_admin',
+    accountStatus: 'active',
+    permissions: []
+  }
+
+  if (
+    profile.accountStatus &&
+    String(profile.accountStatus).toLowerCase() !== 'active'
+  ) {
+    await signOut(auth)
+    throw new Error('This admin account is not active.')
+  }
+
   await setDoc(
-    adminDocRef,
+    doc(db, ADMIN_USERS_COLLECTION, user.uid),
     {
+      uid: user.uid,
+      email: profile.email || user.email,
+      fullName: profile.fullName || 'GRIT Lab Africa Admin',
+      role: 'admin',
       lastLoginAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     },
     { merge: true }
-  )
+  ).catch(() => {})
 
-  const updatedAdmin = await getDoc(adminDocRef)
-
-  if (!updatedAdmin.exists()) {
-    return null
-  }
-
-  return {
-    id: updatedAdmin.id,
-    ...updatedAdmin.data()
-  }
-}
-
-export async function loginAdmin({ email, password, accessCode }) {
-  const credentials = getAdminCredentials()
-
-  const enteredEmail = cleanEmail(email)
-  const enteredPassword = cleanText(password)
-  const enteredAccessCode = cleanText(accessCode)
-
-  const correctEmail = credentials.email
-  const correctPassword = credentials.password
-  const correctAccessCode = credentials.accessCode
-
-  if (
-    enteredEmail !== correctEmail ||
-    enteredPassword !== correctPassword ||
-    enteredAccessCode !== correctAccessCode
-  ) {
-    throw new Error('Invalid admin login details.')
-  }
-
-  const adminUser = await createOrUpdateAdminUser({
-    email: correctEmail,
-    fullName: 'GRIT Lab Africa Admin',
-    accessLevel: 'super_admin',
-    accountStatus: 'active'
+  const safeAdminSession = removeFirestoreDates({
+    ...profile,
+    uid: user.uid,
+    email: profile.email || user.email
   })
-
-  if (adminUser.accountStatus !== 'active') {
-    throw new Error('This admin account is not active.')
-  }
-
-  const updatedAdminUser = await updateAdminLastLogin(correctEmail)
-
-  const safeAdminSession = removeFirestoreDates(updatedAdminUser || adminUser)
 
   localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(safeAdminSession))
 
   return safeAdminSession
+}
+
+export function onAdminAuthStateChanged(callback) {
+  return onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      localStorage.removeItem(ADMIN_SESSION_KEY)
+      callback(null)
+      return
+    }
+
+    getAdminProfile(user)
+      .then((profile) => {
+        if (!profile) {
+          localStorage.removeItem(ADMIN_SESSION_KEY)
+          callback(null)
+          return
+        }
+
+        const safeAdminSession = removeFirestoreDates({
+          ...profile,
+          uid: user.uid,
+          email: profile.email || user.email
+        })
+
+        localStorage.setItem(
+          ADMIN_SESSION_KEY,
+          JSON.stringify(safeAdminSession)
+        )
+
+        callback(safeAdminSession)
+      })
+      .catch(() => {
+        localStorage.removeItem(ADMIN_SESSION_KEY)
+        callback(null)
+      })
+  })
 }
 
 export function getSavedAdminSession() {
@@ -240,21 +197,16 @@ export function getSavedAdminSession() {
   }
 }
 
-export function logoutAdmin() {
+export async function logoutAdmin() {
   localStorage.removeItem(ADMIN_SESSION_KEY)
+
+  try {
+    await signOut(auth)
+  } catch {
+    // Ignore sign-out errors; the local session is already cleared.
+  }
 }
 
 export function isAdminLoggedIn() {
   return Boolean(getSavedAdminSession())
-}
-
-export async function ensureDefaultAdminUserExists() {
-  const credentials = getAdminCredentials()
-
-  return createOrUpdateAdminUser({
-    email: credentials.email,
-    fullName: 'GRIT Lab Africa Admin',
-    accessLevel: 'super_admin',
-    accountStatus: 'active'
-  })
 }
