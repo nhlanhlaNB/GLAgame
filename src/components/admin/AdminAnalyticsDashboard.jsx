@@ -7,51 +7,30 @@ import {
   CartesianGrid,
   Cell,
   ComposedChart,
-  Funnel,
-  FunnelChart,
-  LabelList,
   Legend,
   Line,
-  LineChart,
   Pie,
   PieChart,
+  Radar,
+  RadarChart,
   PolarAngleAxis,
   PolarGrid,
   PolarRadiusAxis,
-  Radar,
-  RadarChart,
-  RadialBar,
-  RadialBarChart,
   ResponsiveContainer,
-  Scatter,
-  ScatterChart,
   Tooltip,
-  Treemap,
   XAxis,
-  YAxis,
-  ZAxis
+  YAxis
 } from 'recharts'
 import { getAdminAnalyticsDashboardData } from '../../services/admin/adminAnalyticsService'
-import { getGoogleAnalyticsData } from '../../services/admin/adminGoogleAnalyticsService'
 import PlayerLocationMap from './PlayerLocationMap'
 
 const PALETTE = ['#2f6fb2', '#83b4f7', '#1a3a6b', '#5b9ad9', '#9cc3ef', '#37618f', '#b8d3f2', '#6a8ab8']
 
-const CHART_OPTIONS = [
-  { id: 'area', label: 'Player Registrations (Area)', shape: 'Area chart', description: 'Shows how many new players created accounts each day over the last 30 days.' },
-  { id: 'line', label: 'Average Score Trend (Line)', shape: 'Line chart', description: 'Shows the average solution score players achieved each day over the last 30 days.' },
-  { id: 'bar', label: 'Hints Requested (Bar)', shape: 'Bar chart', description: 'Shows how many hints players requested each day over the last 30 days.' },
-  { id: 'composed', label: 'Daily Engagement (Combo)', shape: 'Composed chart', description: 'Combines attempts submitted (bars) with the average score (line) for each day.' },
-  { id: 'donut', label: 'Registered vs Active (Donut)', shape: 'Donut chart', description: 'Splits registered players into active and inactive accounts.' },
-  { id: 'pie', label: 'Player Status (Pie)', shape: 'Pie chart', description: 'Shows the share of player accounts that are active versus inactive.' },
-  { id: 'radar', label: 'Scoring Category Profile (Radar)', shape: 'Radar chart', description: 'Compares average scores across all scoring categories, showing strengths and weaknesses.' },
-  { id: 'radial', label: 'GLA Coins per Problem (Gauge)', shape: 'Radial bar chart', description: 'Gauge bars showing the average GLA coins earned per problem card.' },
-  { id: 'scatter', label: 'Score vs Attempts (Bubble)', shape: 'Scatter chart', description: 'Each bubble is a problem card: position shows average score (Y) and number of attempts (X), bubble size = attempts.' },
-  { id: 'funnel', label: 'Learning Conversion Funnel', shape: 'Funnel chart', description: 'Shows how many players move from registered → active → completed 10+ problems → certified.' },
-  { id: 'treemap', label: 'Most Used AI Cards (Treemap)', shape: 'Treemap', description: 'Tiles sized by how often each AI card was used; larger tiles = more usage.' },
-  { id: 'map', label: 'Players by Location (Map)', shape: 'Map', description: 'A live world map showing where players are playing from, using location data captured at signup.' },
-  { id: 'google', label: 'Google Analytics Overview', shape: 'Overview', description: 'Event analytics mirrored from Google Analytics (Firebase) — totals, top events and recent activity.' }
-]
+const GREEN = '#2f9e63'
+const AMBER = '#e8a33d'
+const RED = '#e0524a'
+
+const FUNNEL_COLORS = ['#2f6fb2', '#5b9ad9', '#83b4f7', '#b8d3f2']
 
 function formatDate(millis) {
   if (!millis) return '—'
@@ -64,17 +43,19 @@ function formatDate(millis) {
   })
 }
 
-function ChartCard({ title, shape, description, children }) {
+function ProblemCard({ number, icon, title, question, insight, insightTone = 'default', children }) {
   return (
-    <div className="adaChartCard">
-      <div className="adaChartHead">
+    <div className="adaProblemCard">
+      <div className="adaProblemHead">
+        <span className="adaProblemIcon">{icon}</span>
         <div>
-          <p className="adaChartEyebrow">{shape}</p>
-          <h3 className="adaChartTitle">{title}</h3>
+          <p className="adaProblemQuestion">{question}</p>
+          <h3 className="adaProblemTitle">
+            {number}. {title}
+          </h3>
         </div>
-        <span className="adaChartShape">{shape}</span>
       </div>
-      <p className="adaChartDesc">{description}</p>
+      <p className={`adaProblemInsight adaInsight-${insightTone}`}>{insight}</p>
       <div className="adaChartBody">{children}</div>
     </div>
   )
@@ -107,134 +88,18 @@ function MetricStrip({ metrics }) {
   )
 }
 
-function TreemapContent(props) {
-  const { x, y, width, height, name, index, size } = props
-  const fill = PALETTE[(index || 0) % PALETTE.length]
-
-  return (
-    <g>
-      <rect x={x} y={y} width={width} height={height} fill={fill} rx={7} />
-      {width > 70 && height > 30 ? (
-        <text x={x + 8} y={y + 18} fill="#ffffff" fontSize={12} fontWeight={850}>
-          {name.length > 22 ? `${name.slice(0, 22)}…` : name}
-        </text>
-      ) : null}
-      {width > 120 && height > 46 ? (
-        <text x={x + 8} y={y + 38} fill="rgba(255,255,255,0.85)" fontSize={11}>
-          {size} uses
-        </text>
-      ) : null}
-    </g>
-  )
-}
-
-function GoogleAnalyticsOverview({ gaData }) {
-  const metricItems = [
-    { label: 'Total Events', value: gaData.totalEvents, icon: '📊' },
-    { label: 'Active Users', value: gaData.uniqueUsers, icon: '👥' },
-    { label: 'Events Today', value: gaData.todayEvents, icon: '📅' },
-    { label: 'Events Last 7 Days', value: gaData.last7DayEvents, icon: '🗓️' },
-    { label: 'Active Last 30 Min', value: gaData.last30MinEvents, icon: '⚡' }
-  ]
-
-  return (
-    <div>
-      <div className="adaMetricGrid">
-        {metricItems.map((item) => (
-          <div key={item.label} className="adaMetricCard">
-            <span className="adaMetricIcon">{item.icon}</span>
-            <div>
-              <p className="adaMetricValue">{item.value}</p>
-              <p className="adaMetricLabel">{item.label}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="adaGaColumns">
-        <div className="adaGaList">
-          <p className="adaEyebrow">Top events</p>
-          <h4 className="adaGaListTitle">Event count by name</h4>
-          {gaData.eventsByName.length === 0 ? (
-            <p className="adaMuted">No events recorded yet.</p>
-          ) : (
-            gaData.eventsByName.slice(0, 12).map((row) => (
-              <div key={row.id} className="adaGaRow">
-                <span className="adaGaRowLabel">{row.id}</span>
-                <div className="adaGaBarTrack">
-                  <div
-                    className="adaGaBar adaGaBarBlue"
-                    style={{ width: `${Math.max(6, (row.count / gaData.eventsByName[0].count) * 100)}%` }}
-                  />
-                </div>
-                <span className="adaGaRowCount">{row.count}</span>
-              </div>
-            ))
-          )}
-        </div>
-
-        <div className="adaGaList">
-          <p className="adaEyebrow">Top players</p>
-          <h4 className="adaGaListTitle">Most active players</h4>
-          {gaData.topUsers.length === 0 ? (
-            <p className="adaMuted">No player activity recorded yet.</p>
-          ) : (
-            gaData.topUsers.slice(0, 10).map((row, index) => (
-              <div key={`${row.id}-${index}`} className="adaGaRow">
-                <span className="adaGaRowLabel">{index + 1}. {row.id}</span>
-                <div className="adaGaBarTrack">
-                  <div
-                    className="adaGaBar adaGaBarDeep"
-                    style={{ width: `${Math.max(6, (row.count / gaData.topUsers[0].count) * 100)}%` }}
-                  />
-                </div>
-                <span className="adaGaRowCount">{row.count}</span>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
-
-      <div className="adaPanel" style={{ marginTop: 18 }}>
-        <p className="adaEyebrow">Live activity</p>
-        <h4 className="adaGaListTitle">Recent player events</h4>
-        {gaData.recentEvents.length === 0 ? (
-          <p className="adaMuted">No player events recorded yet.</p>
-        ) : (
-          <div className="adaTableWrap">
-            <table className="adaTable">
-              <thead>
-                <tr>
-                  <th>Player</th>
-                  <th>Event</th>
-                  <th>Type</th>
-                  <th>Screen</th>
-                  <th>When</th>
-                </tr>
-              </thead>
-              <tbody>
-                {gaData.recentEvents.map((event) => (
-                  <tr key={event.id}>
-                    <td className="adaName">{event.userName}</td>
-                    <td>{event.eventName}</td>
-                    <td>{event.eventType}</td>
-                    <td>{event.screenName || '—'}</td>
-                    <td>{formatDate(event.createdAt)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-    </div>
-  )
+const tooltipStyle = {
+  borderRadius: 14,
+  border: '1px solid rgba(47, 111, 178, 0.2)',
+  background: 'rgba(255, 255, 255, 0.97)',
+  color: '#191817',
+  fontSize: '0.82rem',
+  fontWeight: 750,
+  boxShadow: '0 12px 30px rgba(47, 111, 178, 0.14)'
 }
 
 function AdminAnalyticsDashboard({ adminUser, onLogout }) {
   const [data, setData] = useState(null)
-  const [gaData, setGaData] = useState(null)
-  const [selectedChart, setSelectedChart] = useState('area')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [generatedAt, setGeneratedAt] = useState(null)
@@ -244,12 +109,8 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
     setError('')
 
     try {
-      const [analyticsResult, googleResult] = await Promise.all([
-        getAdminAnalyticsDashboardData(),
-        getGoogleAnalyticsData()
-      ])
-      setData(analyticsResult)
-      setGaData(googleResult)
+      const result = await getAdminAnalyticsDashboardData()
+      setData(result)
       setGeneratedAt(new Date())
     } catch (err) {
       setError(err.message || 'Could not load analytics from the system.')
@@ -262,7 +123,64 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
     loadData()
   }, [])
 
-  const selectedOption = CHART_OPTIONS.find((option) => option.id === selectedChart) || CHART_OPTIONS[0]
+  const insights = useMemo(() => {
+    if (!data) return {}
+
+    const funnel = data.distributions.conversionFunnel || []
+    let worstDrop = { pct: 0, from: '', to: '' }
+    for (let i = 1; i < funnel.length; i += 1) {
+      const from = funnel[i - 1].value || 0
+      const to = funnel[i].value || 0
+      const pct = from ? Math.round(((from - to) / from) * 100) : 0
+      if (pct > worstDrop.pct) {
+        worstDrop = { pct, from: funnel[i - 1].name, to: funnel[i].name }
+      }
+    }
+
+    const problems = [...(data.averageScoreByProblem || [])].sort(
+      (a, b) => (a.average || 0) - (b.average || 0)
+    )
+    const hardestProblem = problems[0]
+
+    const hintsPerAttempt =
+      data.metrics.attempts > 0
+        ? (data.metrics.hintsRequested / data.metrics.attempts).toFixed(2)
+        : '0.00'
+
+    const categories = [...(data.averageScoreByCategory || [])].sort(
+      (a, b) => (a.average || 0) - (b.average || 0)
+    )
+    const weakestCategory = categories[0]
+
+    const topProblem = data.mostSelectedProblems?.[0]
+    const topAiCard = data.mostUsedAiCards?.[0]
+
+    const attemptsSeries = data.trends.attemptsOverTime || []
+    const firstAttempts = attemptsSeries[0]?.value || 0
+    const lastAttempts = attemptsSeries[attemptsSeries.length - 1]?.value || 0
+    const engagementDir =
+      attemptsSeries.length < 2
+        ? 'stable'
+        : lastAttempts > firstAttempts
+          ? 'up'
+          : lastAttempts < firstAttempts
+            ? 'down'
+            : 'stable'
+
+    return {
+      worstDrop,
+      hardestProblem,
+      hintsPerAttempt,
+      weakestCategory,
+      topProblem,
+      topAiCard,
+      engagementDir,
+      totalPlayers: data.metrics.registeredPlayers,
+      completionRate: data.metrics.completionRateValue,
+      replayRate: data.metrics.replayRateValue,
+      certificateCount: data.metrics.certificatesIssued
+    }
+  }, [data])
 
   const dailyEngagement = useMemo(() => {
     if (!data) return []
@@ -272,163 +190,6 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
       average: row.average
     }))
   }, [data])
-
-  const renderSelectedChart = () => {
-    if (!data) return null
-    if (!gaData) return null
-
-    const t = data.trends
-    const dist = data.distributions
-    const pp = data.perProblem
-
-    switch (selectedChart) {
-      case 'area':
-        return (
-          <AreaChart data={t.playersOverTime}>
-            <defs>
-              <linearGradient id="gradPlayers" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#2f6fb2" stopOpacity={0.5} />
-                <stop offset="100%" stopColor="#2f6fb2" stopOpacity={0.04} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(47,111,178,0.12)" vertical={false} />
-            <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#6a8ab8' }} interval="preserveStartEnd" />
-            <YAxis tick={{ fontSize: 11, fill: '#6a8ab8' }} width={30} />
-            <Tooltip contentStyle={tooltipStyle} />
-            <Area type="monotone" dataKey="value" name="Players" stroke="#2f6fb2" strokeWidth={2.5} fill="url(#gradPlayers)" />
-          </AreaChart>
-        )
-
-      case 'line':
-        return (
-          <LineChart data={t.averageScoreOverTime}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(47,111,178,0.12)" vertical={false} />
-            <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#6a8ab8' }} interval="preserveStartEnd" />
-            <YAxis tick={{ fontSize: 11, fill: '#6a8ab8' }} width={30} domain={[0, 100]} />
-            <Tooltip contentStyle={tooltipStyle} />
-            <Line type="monotone" dataKey="average" name="Avg score" stroke="#1a3a6b" strokeWidth={2.5} dot={false} />
-          </LineChart>
-        )
-
-      case 'bar':
-        return (
-          <BarChart data={t.hintsOverTime}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(47,111,178,0.12)" vertical={false} />
-            <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#6a8ab8' }} interval="preserveStartEnd" />
-            <YAxis tick={{ fontSize: 11, fill: '#6a8ab8' }} width={30} />
-            <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(131,180,247,0.12)' }} />
-            <Bar dataKey="value" name="Hints" fill="#83b4f7" radius={[6, 6, 0, 0]} maxBarSize={28} />
-          </BarChart>
-        )
-
-      case 'composed':
-        return (
-          <ComposedChart data={dailyEngagement}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(47,111,178,0.12)" vertical={false} />
-            <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#6a8ab8' }} interval="preserveStartEnd" />
-            <YAxis yAxisId="left" dataKey="attempts" tick={{ fontSize: 11, fill: '#6a8ab8' }} width={34} />
-            <YAxis yAxisId="right" orientation="right" dataKey="average" domain={[0, 100]} tick={{ fontSize: 11, fill: '#6a8ab8' }} width={36} />
-            <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(131,180,247,0.12)' }} />
-            <Legend verticalAlign="top" iconType="circle" iconSize={9} />
-            <Bar yAxisId="left" dataKey="attempts" name="Attempts" fill="#2f6fb2" radius={[6, 6, 0, 0]} maxBarSize={22} />
-            <Line yAxisId="right" type="monotone" dataKey="average" name="Avg score" stroke="#1a3a6b" strokeWidth={2.5} dot={false} />
-          </ComposedChart>
-        )
-
-      case 'donut':
-        return (
-          <PieChart>
-            <Pie data={dist.activeVsRegistered} dataKey="value" nameKey="label" innerRadius={70} outerRadius={110} paddingAngle={2} label={(p) => `${Math.round(p.percent * 100)}%`}>
-              {dist.activeVsRegistered.map((entry, index) => (
-                <Cell key={entry.label} fill={PALETTE[index % PALETTE.length]} />
-              ))}
-            </Pie>
-            <Tooltip formatter={(value) => `${value} players`} />
-            <Legend verticalAlign="bottom" iconType="circle" iconSize={9} />
-          </PieChart>
-        )
-
-      case 'pie':
-        return (
-          <PieChart>
-            <Pie data={dist.playerStatusSplit} dataKey="value" nameKey="label" outerRadius={110} label={(p) => `${Math.round(p.percent * 100)}%`}>
-              {dist.playerStatusSplit.map((entry, index) => (
-                <Cell key={entry.label} fill={PALETTE[index % PALETTE.length]} />
-              ))}
-            </Pie>
-            <Tooltip formatter={(value) => `${value} players`} />
-            <Legend verticalAlign="bottom" iconType="circle" iconSize={9} />
-          </PieChart>
-        )
-
-      case 'radar':
-        return (
-          <RadarChart data={data.averageScoreByCategory} outerRadius={130}>
-            <PolarGrid stroke="rgba(47,111,178,0.2)" />
-            <PolarAngleAxis dataKey="category" tick={{ fontSize: 11, fill: '#1a3a6b' }} />
-            <PolarRadiusAxis tick={{ fontSize: 10, fill: '#6a8ab8' }} angle={30} domain={[0, 100]} />
-            <Radar name="Average" dataKey="average" stroke="#2f6fb2" fill="#2f6fb2" fillOpacity={0.4} strokeWidth={2.5} />
-            <Legend verticalAlign="bottom" iconType="circle" iconSize={9} />
-            <Tooltip contentStyle={tooltipStyle} />
-          </RadarChart>
-        )
-
-      case 'radial':
-        return (
-          <RadialBarChart innerRadius="18%" outerRadius="100%" data={pp.coinsByProblem} startAngle={90} endAngle={-270}>
-            <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-            <RadialBar dataKey="coins" name="Coins" cornerRadius={7} background={{ fill: 'rgba(47,111,178,0.1)' }} />
-            <Tooltip contentStyle={tooltipStyle} />
-            <Legend verticalAlign="bottom" iconType="circle" iconSize={9} />
-          </RadialBarChart>
-        )
-
-      case 'scatter':
-        return (
-          <ScatterChart margin={{ top: 12, right: 20, bottom: 34, left: 4 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(47,111,178,0.12)" />
-            <XAxis type="number" dataKey="x" name="Attempts" tick={{ fontSize: 11, fill: '#6a8ab8' }} label={{ value: 'Attempts', position: 'insideBottom', offset: -24, fill: '#6a8ab8', fontSize: 11 }} />
-            <YAxis type="number" dataKey="y" name="Average score" domain={[0, 100]} tick={{ fontSize: 11, fill: '#6a8ab8' }} width={36} />
-            <ZAxis type="number" range={[90, 420]} />
-            <Tooltip contentStyle={tooltipStyle} cursor={{ strokeDasharray: '3 3' }} />
-            <Scatter data={data.averageScoreByProblem.map((row) => ({ name: row.title, x: row.count, y: row.average }))} fill="#2f6fb2" />
-          </ScatterChart>
-        )
-
-      case 'funnel':
-        return (
-          <FunnelChart>
-            <Tooltip contentStyle={tooltipStyle} />
-            <Funnel dataKey="value" data={dist.conversionFunnel} isAnimationActive>
-              <LabelList position="right" fill="#191817" stroke="none" dataKey="name" />
-            </Funnel>
-          </FunnelChart>
-        )
-
-      case 'treemap':
-        return (
-          <Treemap
-            data={data.mostUsedAiCards.map((row) => ({ name: row.title, size: row.count }))}
-            dataKey="size"
-            nameKey="name"
-            stroke="#ffffff"
-            fill="#2f6fb2"
-            content={<TreemapContent />}
-          />
-        )
-
-      case 'map':
-        return (
-          <PlayerLocationMap markers={data.playerLocations?.markers || []} />
-        )
-
-      case 'google':
-        return <GoogleAnalyticsOverview gaData={gaData} />
-
-      default:
-        return null
-    }
-  }
 
   if (loading) {
     return (
@@ -459,17 +220,31 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
     )
   }
 
+  const funnelData = (data.distributions.conversionFunnel || []).map((entry) => ({
+    status: entry.name,
+    count: entry.value || 0
+  }))
+  const replaySplit = data.distributions.replaySplit || []
+  const hintSeries = data.trends.hintsOverTime || []
+  const categoryData = data.averageScoreByCategory || []
+  const selectedProblems = data.mostSelectedProblems || []
+  const aiCardUsage = data.mostUsedAiCards || []
+  const problemsSorted = [...(data.averageScoreByProblem || [])].sort(
+    (a, b) => (a.average || 0) - (b.average || 0)
+  )
+  const replayRate = insights.replayRate || 0
+
   return (
     <div className="adaPage">
       <style>{dashboardCss}</style>
 
       <header className="adaHeader">
         <div>
-          <p className="adaEyebrow">Analytics dashboard</p>
+          <p className="adaEyebrow">Problem-focused analytics dashboard</p>
           <h2 className="adaTitle">GRIT Lab Africa Learning Analytics</h2>
           <p className="adaMuted">
-            {data.metrics.registeredPlayers} registered players · {data.metrics.attempts} attempts ·{' '}
-            {data.metrics.certificatesIssued} certificates · generated {formatDate(generatedAt)}
+            Every chart answers a learning problem so issues can be spotted and fixed. Generated{' '}
+            {formatDate(generatedAt)}
           </p>
         </div>
 
@@ -485,6 +260,299 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
       </header>
 
       <MetricStrip metrics={data.metrics} />
+
+      <div className="adaProblemGrid">
+        {/* 1. Where do players drop off in the learning journey? */}
+        <ProblemCard
+          number={1}
+          icon="🎓"
+          title="Learning Journey Drop-off"
+          question="Where do players lose momentum on the way to certification?"
+          insight={
+            insights.worstDrop?.pct > 0
+              ? `Biggest drop: ${insights.worstDrop.from} → ${insights.worstDrop.to} (−${insights.worstDrop.pct}%)`
+              : 'No drop detected between journey stages.'
+          }
+          insightTone={insights.worstDrop?.pct > 0 ? 'warn' : 'good'}
+        >
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={funnelData} layout="vertical" margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(47,111,178,0.12)" />
+              <XAxis type="number" allowDecimals={false} tickLine={false} axisLine={false} fontSize={11} fill="#6a8ab8" />
+              <YAxis
+                dataKey="status"
+                type="category"
+                tickLine={false}
+                axisLine={false}
+                fontSize={11}
+                width={110}
+                fill="#6a8ab8"
+              />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Bar dataKey="count" radius={[0, 8, 8, 0]} maxBarSize={26}>
+                {funnelData.map((entry, index) => (
+                  <Cell key={entry.status} fill={FUNNEL_COLORS[index % FUNNEL_COLORS.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </ProblemCard>
+
+        {/* 2. Which problems are hardest for players? */}
+        <ProblemCard
+          number={2}
+          icon="🧩"
+          title="Hardest Problem Cards"
+          question="Which problems do players score lowest on?"
+          insight={
+            insights.hardestProblem
+              ? `Hardest: "${insights.hardestProblem.title}" at ${insights.hardestProblem.average}% average`
+              : 'No scored submissions yet.'
+          }
+          insightTone={insights.hardestProblem && insights.hardestProblem.average < 50 ? 'danger' : 'warn'}
+        >
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={problemsSorted.slice(0, 8)} layout="vertical" margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(47,111,178,0.12)" />
+              <XAxis type="number" domain={[0, 100]} unit="%" tickLine={false} axisLine={false} fontSize={11} fill="#6a8ab8" />
+              <YAxis
+                dataKey="title"
+                type="category"
+                tickLine={false}
+                axisLine={false}
+                fontSize={11}
+                width={130}
+                fill="#6a8ab8"
+              />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Bar dataKey="average" name="Avg score" radius={[0, 8, 8, 0]} maxBarSize={22}>
+                {problemsSorted.slice(0, 8).map((entry) => (
+                  <Cell
+                    key={entry.id}
+                    fill={entry.average >= 70 ? GREEN : entry.average >= 50 ? AMBER : RED}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </ProblemCard>
+
+        {/* 3. Do players come back and replay? */}
+        <ProblemCard
+          number={3}
+          icon="🔁"
+          title="Replay & Retention"
+          question="How many players come back to play problems more than once?"
+          insight={
+            replayRate > 0
+              ? `${replayRate}% of players replayed at least one problem.`
+              : 'No replay activity recorded yet.'
+          }
+          insightTone={replayRate >= 40 ? 'good' : replayRate > 0 ? 'warn' : 'default'}
+        >
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={replaySplit}
+                dataKey="value"
+                nameKey="label"
+                innerRadius={80}
+                outerRadius={120}
+                paddingAngle={2}
+                label={(props) => `${props.label} (${props.percent}%)`}
+              >
+                {replaySplit.map((entry, index) => (
+                  <Cell key={entry.label} fill={PALETTE[index % PALETTE.length]} />
+                ))}
+              </Pie>
+              <Tooltip contentStyle={tooltipStyle} formatter={(value) => `${value} players`} />
+              <Legend verticalAlign="bottom" iconType="circle" iconSize={9} />
+            </PieChart>
+          </ResponsiveContainer>
+        </ProblemCard>
+
+        {/* 4. How dependent are players on hints? */}
+        <ProblemCard
+          number={4}
+          icon="💡"
+          title="Hint Dependency"
+          question="Are players relying on hints too heavily to solve problems?"
+          insight={
+            data.metrics.attempts > 0
+              ? `On average each attempt uses ${insights.hintsPerAttempt} hint(s).`
+              : 'No attempts recorded yet.'
+          }
+          insightTone={Number(insights.hintsPerAttempt) > 2 ? 'danger' : Number(insights.hintsPerAttempt) > 1 ? 'warn' : 'good'}
+        >
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart data={hintSeries} margin={{ top: 12, right: 12, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="gradHints" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#83b4f7" stopOpacity={0.45} />
+                  <stop offset="95%" stopColor="#83b4f7" stopOpacity={0.02} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(47,111,178,0.12)" />
+              <XAxis dataKey="label" tickLine={false} axisLine={false} fontSize={11} fill="#6a8ab8" />
+              <YAxis tickLine={false} axisLine={false} fontSize={11} fill="#6a8ab8" />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Area
+                type="monotone"
+                dataKey="value"
+                name="Hints"
+                stroke="#2f6fb2"
+                strokeWidth={3}
+                fillOpacity={1}
+                fill="url(#gradHints)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </ProblemCard>
+
+        {/* 5. Which scoring skills are weakest? */}
+        <ProblemCard
+          number={5}
+          icon="📐"
+          title="Scoring Category Profile"
+          question="Which AI-thinking skills do players score weakest on?"
+          insight={
+            insights.weakestCategory
+              ? `Weakest skill: ${insights.weakestCategory.category} (${insights.weakestCategory.average}% avg)`
+              : 'No scored categories yet.'
+          }
+          insightTone={
+            insights.weakestCategory && insights.weakestCategory.average < 50 ? 'danger' : 'warn'
+          }
+        >
+          <ResponsiveContainer width="100%" height={300}>
+            <RadarChart data={categoryData} outerRadius={120}>
+              <PolarGrid stroke="rgba(47,111,178,0.2)" />
+              <PolarAngleAxis dataKey="category" tick={{ fontSize: 10, fill: '#1a3a6b' }} />
+              <PolarRadiusAxis tick={{ fontSize: 9, fill: '#6a8ab8' }} angle={30} domain={[0, 100]} />
+              <Radar
+                name="Average"
+                dataKey="average"
+                stroke="#2f6fb2"
+                fill="#2f6fb2"
+                fillOpacity={0.35}
+                strokeWidth={2.5}
+              />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Legend verticalAlign="bottom" iconType="circle" iconSize={9} />
+            </RadarChart>
+          </ResponsiveContainer>
+        </ProblemCard>
+
+        {/* 6. Which problems get picked the most? */}
+        <ProblemCard
+          number={6}
+          icon="📌"
+          title="Most Selected Problems"
+          question="Which problem cards are players choosing most often?"
+          insight={
+            insights.topProblem
+              ? `Top pick: "${insights.topProblem.title}" (${insights.topProblem.count} selections)`
+              : 'No problem selections recorded yet.'
+          }
+          insightTone="good"
+        >
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={selectedProblems.slice(0, 8)} layout="vertical" margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(47,111,178,0.12)" />
+              <XAxis type="number" allowDecimals={false} tickLine={false} axisLine={false} fontSize={11} fill="#6a8ab8" />
+              <YAxis
+                dataKey="title"
+                type="category"
+                tickLine={false}
+                axisLine={false}
+                fontSize={11}
+                width={130}
+                fill="#6a8ab8"
+              />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Bar dataKey="count" name="Selections" radius={[0, 8, 8, 0]} maxBarSize={22}>
+                {selectedProblems.slice(0, 8).map((entry, index) => (
+                  <Cell key={entry.id} fill={PALETTE[index % PALETTE.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </ProblemCard>
+
+        {/* 7. Which AI cards do players use most? */}
+        <ProblemCard
+          number={7}
+          icon="🤖"
+          title="Most Used AI Cards"
+          question="Which AI capabilities are players applying most in their solutions?"
+          insight={
+            insights.topAiCard
+              ? `Most used: "${insights.topAiCard.title}" (${insights.topAiCard.count} uses)`
+              : 'No AI card usage recorded yet.'
+          }
+          insightTone="good"
+        >
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={aiCardUsage.slice(0, 8)} layout="vertical" margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(47,111,178,0.12)" />
+              <XAxis type="number" allowDecimals={false} tickLine={false} axisLine={false} fontSize={11} fill="#6a8ab8" />
+              <YAxis
+                dataKey="title"
+                type="category"
+                tickLine={false}
+                axisLine={false}
+                fontSize={11}
+                width={130}
+                fill="#6a8ab8"
+              />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Bar dataKey="count" name="Uses" radius={[0, 8, 8, 0]} maxBarSize={22}>
+                {aiCardUsage.slice(0, 8).map((entry, index) => (
+                  <Cell key={entry.id} fill={PALETTE[index % PALETTE.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </ProblemCard>
+
+        {/* 8. Is engagement growing? */}
+        <ProblemCard
+          number={8}
+          icon="📈"
+          title="Daily Engagement Trend"
+          question="Is player activity growing, steady, or slowing down?"
+          insight={
+            insights.engagementDir === 'up'
+              ? 'Engagement is trending upward — activity is growing.'
+              : insights.engagementDir === 'down'
+                ? 'Engagement is trending downward — investigate what changed.'
+                : 'Engagement is steady over the period.'
+          }
+          insightTone={insights.engagementDir === 'up' ? 'good' : insights.engagementDir === 'down' ? 'danger' : 'default'}
+        >
+          <ResponsiveContainer width="100%" height={300}>
+            <ComposedChart data={dailyEngagement} margin={{ top: 12, right: 12, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(47,111,178,0.12)" />
+              <XAxis dataKey="label" tickLine={false} axisLine={false} fontSize={11} fill="#6a8ab8" />
+              <YAxis yAxisId="left" dataKey="attempts" tickLine={false} axisLine={false} fontSize={11} fill="#6a8ab8" />
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                dataKey="average"
+                domain={[0, 100]}
+                tickLine={false}
+                axisLine={false}
+                fontSize={11}
+                fill="#6a8ab8"
+              />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Legend verticalAlign="top" iconType="circle" iconSize={9} />
+              <Bar yAxisId="left" dataKey="attempts" name="Attempts" fill="#83b4f7" radius={[6, 6, 0, 0]} maxBarSize={22} />
+              <Line yAxisId="right" type="monotone" dataKey="average" name="Avg score" stroke="#1a3a6b" strokeWidth={2.5} dot={false} />
+            </ComposedChart>
+          </ResponsiveContainer>
+        </ProblemCard>
+      </div>
 
       <div className="adaPanel" style={{ marginBottom: 22 }}>
         <p className="adaEyebrow">Players by location</p>
@@ -543,65 +611,8 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
           </div>
         )}
       </div>
-
-      <div className="adaPicker">
-        <label className="adaPickerLabel" htmlFor="adaChartSelect">
-          Select a chart
-        </label>
-        <select
-          id="adaChartSelect"
-          className="adaPickerSelect"
-          value={selectedChart}
-          onChange={(event) => setSelectedChart(event.target.value)}
-        >
-          {CHART_OPTIONS.map((option) => (
-            <option key={option.id} value={option.id}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div key={selectedOption.id} className="adaChartAnimate">
-        {selectedOption.id === 'google' ? (
-          <div className="adaPanel">
-            <p className="adaChartEyebrow">Google Analytics (Firebase)</p>
-            <h3 className="adaChartTitle">{selectedOption.label}</h3>
-            <p className="adaChartDesc">{selectedOption.description}</p>
-            <div className="adaChartBody">{renderSelectedChart()}</div>
-          </div>
-        ) : selectedOption.id === 'map' ? (
-          <ChartCard
-            title={selectedOption.label}
-            shape={selectedOption.shape}
-            description={selectedOption.description}
-          >
-            {renderSelectedChart()}
-          </ChartCard>
-        ) : (
-          <ChartCard
-            title={selectedOption.label}
-            shape={selectedOption.shape}
-            description={selectedOption.description}
-          >
-            <ResponsiveContainer width="100%" height={360}>
-              {renderSelectedChart()}
-            </ResponsiveContainer>
-          </ChartCard>
-        )}
-      </div>
     </div>
   )
-}
-
-const tooltipStyle = {
-  borderRadius: 14,
-  border: '1px solid rgba(47, 111, 178, 0.2)',
-  background: 'rgba(255, 255, 255, 0.97)',
-  color: '#191817',
-  fontSize: '0.82rem',
-  fontWeight: 750,
-  boxShadow: '0 12px 30px rgba(47, 111, 178, 0.14)'
 }
 
 const dashboardCss = `
@@ -719,6 +730,72 @@ const dashboardCss = `
     letter-spacing: 0.06em;
   }
 
+  .adaProblemGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 22px;
+  }
+
+  .adaProblemCard {
+    display: flex;
+    flex-direction: column;
+    padding: 22px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(47, 111, 178, 0.16);
+    box-shadow: 0 16px 40px rgba(47, 111, 178, 0.1);
+  }
+
+  .adaProblemHead {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .adaProblemIcon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: rgba(131, 180, 247, 0.22);
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+
+  .adaProblemQuestion {
+    margin: 0 0 4px;
+    color: #5a6b8c;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+
+  .adaProblemTitle {
+    margin: 0;
+    color: #191817;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+  }
+
+  .adaProblemInsight {
+    margin: 0 0 16px;
+    padding: 9px 13px;
+    border-radius: 12px;
+    font-size: 0.84rem;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+
+  .adaInsight-default { background: rgba(47, 111, 178, 0.1); color: #1a3a6b; }
+  .adaInsight-good { background: rgba(47, 158, 99, 0.12); color: #1f7a4a; }
+  .adaInsight-warn { background: rgba(232, 163, 61, 0.16); color: #8a5a10; }
+  .adaInsight-danger { background: rgba(224, 82, 74, 0.14); color: #a1241e; }
+
+  .adaChartBody { position: relative; }
+
   .adaPanel {
     padding: 24px;
     border-radius: 24px;
@@ -767,160 +844,8 @@ const dashboardCss = `
     text-transform: capitalize;
   }
 
-  .adaStatus-active { background: rgba(63, 118, 74, 0.16); color: #2f6b3c; }
+  .adaStatus-active { background: rgba(47, 158, 99, 0.16); color: #1f7a4a; }
   .adaStatus-inactive { background: rgba(153, 27, 27, 0.12); color: #991b1b; }
-
-  .adaPicker {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin: 22px 0;
-    flex-wrap: wrap;
-  }
-
-  .adaPickerLabel {
-    color: #2f6fb2;
-    font-weight: 850;
-    font-size: 0.9rem;
-  }
-
-  .adaPickerSelect {
-    flex: 1;
-    min-width: 280px;
-    max-width: 520px;
-    padding: 14px 16px;
-    border-radius: 16px;
-    border: 1px solid rgba(47, 111, 178, 0.24);
-    background: rgba(255, 255, 255, 0.9);
-    color: #191817;
-    font-weight: 750;
-    outline: none;
-    box-shadow: 0 10px 26px rgba(47, 111, 178, 0.08);
-  }
-
-  .adaChartCard {
-    padding: 22px;
-    border-radius: 24px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(47, 111, 178, 0.16);
-    box-shadow: 0 16px 40px rgba(47, 111, 178, 0.12);
-  }
-
-  .adaChartHead {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  .adaChartEyebrow {
-    margin: 0 0 6px;
-    color: #2f6fb2;
-    font-size: 0.68rem;
-    font-weight: 850;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .adaChartTitle {
-    margin: 0;
-    color: #191817;
-    font-size: 1.1rem;
-    letter-spacing: -0.02em;
-  }
-
-  .adaChartShape {
-    padding: 5px 12px;
-    border-radius: 999px;
-    background: rgba(131, 180, 247, 0.28);
-    color: #2f6fb2;
-    font-size: 0.7rem;
-    font-weight: 850;
-    white-space: nowrap;
-  }
-
-  .adaChartDesc {
-    margin: 10px 0 16px;
-    color: #5a6b8c;
-    font-size: 0.86rem;
-    line-height: 1.55;
-  }
-
-  .adaChartBody { position: relative; }
-
-  .adaChartAnimate {
-    animation: adaFadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  @keyframes adaFadeIn {
-    from { opacity: 0; transform: translateY(16px) scale(0.99); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  .adaGaColumns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-  }
-
-  .adaGaList {
-    padding: 20px;
-    border-radius: 22px;
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(47, 111, 178, 0.14);
-  }
-
-  .adaGaListTitle {
-    margin: 0 0 14px;
-    color: #191817;
-    font-size: 1rem;
-    letter-spacing: -0.02em;
-  }
-
-  .adaGaRow {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 120px 40px;
-    align-items: center;
-    gap: 10px;
-    padding: 7px 0;
-  }
-
-  .adaGaRowLabel {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: #191817;
-    font-size: 0.84rem;
-    font-weight: 750;
-  }
-
-  .adaGaBarTrack {
-    height: 9px;
-    border-radius: 999px;
-    background: rgba(47, 111, 178, 0.12);
-    overflow: hidden;
-  }
-
-  .adaGaBar {
-    height: 100%;
-    border-radius: 999px;
-    background: linear-gradient(90deg, #83b4f7, #2f6fb2);
-  }
-
-  .adaGaBarBlue {
-    background: linear-gradient(90deg, #83b4f7, #2f6fb2);
-  }
-
-  .adaGaBarDeep {
-    background: linear-gradient(90deg, #2f6fb2, #1a3a6b);
-  }
-
-  .adaGaRowCount {
-    text-align: right;
-    color: #2f6fb2;
-    font-weight: 900;
-    font-size: 0.84rem;
-  }
 
   .adaMapWrap {
     position: relative;
@@ -1001,8 +926,8 @@ const dashboardCss = `
     100% { opacity: 0; }
   }
 
-  @media (max-width: 900px) {
-    .adaGaColumns { grid-template-columns: 1fr; }
+  @media (max-width: 980px) {
+    .adaProblemGrid { grid-template-columns: 1fr; }
   }
 `
 
