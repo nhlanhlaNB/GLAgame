@@ -3,7 +3,7 @@ import { styles } from '../game/gameStyles'
 import { MetricCard, SectionHeader, Pill, ProgressBar } from '../game/ui'
 import { getAdminDashboardStats } from '../../services/admin/adminAnalyticsService'
 
-function AdminDashboardScreen() {
+function AdminDashboardScreen({ onGoToAnalytics, onLogout }) {
   const [dashboardStats, setDashboardStats] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -67,7 +67,26 @@ function AdminDashboardScreen() {
   }
 
   return (
-    <div style={styles.panel}>
+    <main className="glaAdminHome">
+      <style>{homeCss}</style>
+
+      <header className="glaHomeHeader">
+        <div>
+          <p className="glaEyebrow">GRIT Lab Africa</p>
+          <h1>Admin Dashboard</h1>
+        </div>
+
+        <div className="glaHomeActions">
+          <button type="button" className="glaPrimaryButton" onClick={onGoToAnalytics}>
+            Go To Analytics
+          </button>
+          <button type="button" className="glaGhostButton" onClick={onLogout}>
+            Logout
+          </button>
+        </div>
+      </header>
+
+      <div style={styles.panel}>
       <SectionHeader
         eyebrow="Admin dashboard"
         title="GRIT Lab Africa administration overview."
@@ -163,7 +182,8 @@ function AdminDashboardScreen() {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </main>
   )
 }
 
@@ -176,5 +196,73 @@ const secondaryButtonStyle = {
   color: '#5c3512',
   fontWeight: 850
 }
+
+const homeCss = `
+  .glaAdminHome {
+    min-height: 100vh;
+    padding: 30px;
+    background:
+      radial-gradient(circle at top left, rgba(244, 210, 138, 0.22), transparent 30rem),
+      linear-gradient(135deg, rgba(255, 248, 235, 0.94), rgba(232, 214, 170, 0.7));
+  }
+
+  .glaHomeHeader {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .glaEyebrow {
+    margin: 0 0 8px;
+    color: #9a6a22;
+    font-size: 0.74rem;
+    font-weight: 850;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .glaHomeHeader h1 {
+    margin: 0;
+    color: #4b2b10;
+    font-size: clamp(1.7rem, 3.4vw, 3rem);
+    line-height: 0.98;
+    letter-spacing: -0.055em;
+  }
+
+  .glaHomeActions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .glaPrimaryButton {
+    border: 0;
+    border-radius: 999px;
+    padding: 13px 22px;
+    cursor: pointer;
+    font-weight: 850;
+    background: linear-gradient(135deg, #9a6a22, #5c3512);
+    color: #fff8eb;
+    box-shadow: 0 14px 30px rgba(92, 53, 18, 0.24);
+  }
+
+  .glaGhostButton {
+    border: 1px solid rgba(139, 92, 40, 0.22);
+    border-radius: 999px;
+    padding: 13px 22px;
+    cursor: pointer;
+    font-weight: 850;
+    background: rgba(255, 255, 255, 0.72);
+    color: #5c3512;
+  }
+
+  @media (max-width: 620px) {
+    .glaAdminHome { padding: 16px; }
+  }
+`
 
 export default AdminDashboardScreen

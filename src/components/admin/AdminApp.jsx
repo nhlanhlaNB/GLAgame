@@ -57,6 +57,18 @@ function AdminApp() {
     return <AdminLoginScreen onLogin={setAdminUser} />
   }
 
+  if (activeScreen === 'dashboard') {
+    return (
+      <AdminDashboardScreen
+        onGoToAnalytics={() => setActiveScreen('analytics')}
+        onLogout={() => {
+          logoutAdmin()
+          setAdminUser(null)
+        }}
+      />
+    )
+  }
+
   return (
     <AdminLayout
       adminUser={adminUser}
@@ -67,7 +79,6 @@ function AdminApp() {
         setAdminUser(null)
       }}
     >
-      {activeScreen === 'dashboard' && <AdminDashboardScreen />}
       {activeScreen === 'problem-cards' && <AdminProblemCardsScreen />}
       {activeScreen === 'ai-cards' && <AdminAiCardsScreen />}
       {activeScreen === 'sdg-mappings' && <AdminSdgMappingScreen />}
