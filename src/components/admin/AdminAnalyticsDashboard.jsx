@@ -34,7 +34,7 @@ import {
 import { getAdminAnalyticsDashboardData } from '../../services/admin/adminAnalyticsService'
 import { getGoogleAnalyticsData } from '../../services/admin/adminGoogleAnalyticsService'
 
-const PALETTE = ['#9a6a22', '#5c3512', '#d9a441', '#e8b96a', '#7c5a1e', '#b98a44', '#f0c987', '#8a6a3a']
+const PALETTE = ['#2f6fb2', '#83b4f7', '#1a3a6b', '#5b9ad9', '#9cc3ef', '#37618f', '#b8d3f2', '#6a8ab8']
 
 const CHART_OPTIONS = [
   { id: 'area', label: 'Player Registrations (Area)', shape: 'Area chart', description: 'Shows how many new players created accounts each day over the last 30 days.' },
@@ -113,12 +113,12 @@ function TreemapContent(props) {
     <g>
       <rect x={x} y={y} width={width} height={height} fill={fill} rx={7} />
       {width > 70 && height > 30 ? (
-        <text x={x + 8} y={y + 18} fill="#fff8eb" fontSize={12} fontWeight={850}>
+        <text x={x + 8} y={y + 18} fill="#ffffff" fontSize={12} fontWeight={850}>
           {name.length > 22 ? `${name.slice(0, 22)}…` : name}
         </text>
       ) : null}
       {width > 120 && height > 46 ? (
-        <text x={x + 8} y={y + 38} fill="rgba(255,248,235,0.85)" fontSize={11}>
+        <text x={x + 8} y={y + 38} fill="rgba(255,255,255,0.85)" fontSize={11}>
           {size} uses
         </text>
       ) : null}
@@ -161,7 +161,7 @@ function GoogleAnalyticsOverview({ gaData }) {
                 <span className="adaGaRowLabel">{row.id}</span>
                 <div className="adaGaBarTrack">
                   <div
-                    className="adaGaBar"
+                    className="adaGaBar adaGaBarBlue"
                     style={{ width: `${Math.max(6, (row.count / gaData.eventsByName[0].count) * 100)}%` }}
                   />
                 </div>
@@ -182,7 +182,7 @@ function GoogleAnalyticsOverview({ gaData }) {
                 <span className="adaGaRowLabel">{index + 1}. {row.id}</span>
                 <div className="adaGaBarTrack">
                   <div
-                    className="adaGaBar adaGaBarDark"
+                    className="adaGaBar adaGaBarDeep"
                     style={{ width: `${Math.max(6, (row.count / gaData.topUsers[0].count) * 100)}%` }}
                   />
                 </div>
@@ -285,51 +285,51 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
           <AreaChart data={t.playersOverTime}>
             <defs>
               <linearGradient id="gradPlayers" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#9a6a22" stopOpacity={0.55} />
-                <stop offset="100%" stopColor="#9a6a22" stopOpacity={0.04} />
+                <stop offset="0%" stopColor="#2f6fb2" stopOpacity={0.5} />
+                <stop offset="100%" stopColor="#2f6fb2" stopOpacity={0.04} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(92,53,18,0.12)" vertical={false} />
-            <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#8a6a3a' }} interval="preserveStartEnd" />
-            <YAxis tick={{ fontSize: 11, fill: '#8a6a3a' }} width={30} />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(47,111,178,0.12)" vertical={false} />
+            <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#6a8ab8' }} interval="preserveStartEnd" />
+            <YAxis tick={{ fontSize: 11, fill: '#6a8ab8' }} width={30} />
             <Tooltip contentStyle={tooltipStyle} />
-            <Area type="monotone" dataKey="value" name="Players" stroke="#9a6a22" strokeWidth={2.5} fill="url(#gradPlayers)" />
+            <Area type="monotone" dataKey="value" name="Players" stroke="#2f6fb2" strokeWidth={2.5} fill="url(#gradPlayers)" />
           </AreaChart>
         )
 
       case 'line':
         return (
           <LineChart data={t.averageScoreOverTime}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(92,53,18,0.12)" vertical={false} />
-            <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#8a6a3a' }} interval="preserveStartEnd" />
-            <YAxis tick={{ fontSize: 11, fill: '#8a6a3a' }} width={30} domain={[0, 100]} />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(47,111,178,0.12)" vertical={false} />
+            <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#6a8ab8' }} interval="preserveStartEnd" />
+            <YAxis tick={{ fontSize: 11, fill: '#6a8ab8' }} width={30} domain={[0, 100]} />
             <Tooltip contentStyle={tooltipStyle} />
-            <Line type="monotone" dataKey="average" name="Avg score" stroke="#5c3512" strokeWidth={2.5} dot={false} />
+            <Line type="monotone" dataKey="average" name="Avg score" stroke="#1a3a6b" strokeWidth={2.5} dot={false} />
           </LineChart>
         )
 
       case 'bar':
         return (
           <BarChart data={t.hintsOverTime}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(92,53,18,0.12)" vertical={false} />
-            <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#8a6a3a' }} interval="preserveStartEnd" />
-            <YAxis tick={{ fontSize: 11, fill: '#8a6a3a' }} width={30} />
-            <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(217,164,65,0.12)' }} />
-            <Bar dataKey="value" name="Hints" fill="#d9a441" radius={[6, 6, 0, 0]} maxBarSize={28} />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(47,111,178,0.12)" vertical={false} />
+            <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#6a8ab8' }} interval="preserveStartEnd" />
+            <YAxis tick={{ fontSize: 11, fill: '#6a8ab8' }} width={30} />
+            <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(131,180,247,0.12)' }} />
+            <Bar dataKey="value" name="Hints" fill="#83b4f7" radius={[6, 6, 0, 0]} maxBarSize={28} />
           </BarChart>
         )
 
       case 'composed':
         return (
           <ComposedChart data={dailyEngagement}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(92,53,18,0.12)" vertical={false} />
-            <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#8a6a3a' }} interval="preserveStartEnd" />
-            <YAxis yAxisId="left" dataKey="attempts" tick={{ fontSize: 11, fill: '#8a6a3a' }} width={34} />
-            <YAxis yAxisId="right" orientation="right" dataKey="average" domain={[0, 100]} tick={{ fontSize: 11, fill: '#8a6a3a' }} width={36} />
-            <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(217,164,65,0.12)' }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(47,111,178,0.12)" vertical={false} />
+            <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#6a8ab8' }} interval="preserveStartEnd" />
+            <YAxis yAxisId="left" dataKey="attempts" tick={{ fontSize: 11, fill: '#6a8ab8' }} width={34} />
+            <YAxis yAxisId="right" orientation="right" dataKey="average" domain={[0, 100]} tick={{ fontSize: 11, fill: '#6a8ab8' }} width={36} />
+            <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(131,180,247,0.12)' }} />
             <Legend verticalAlign="top" iconType="circle" iconSize={9} />
-            <Bar yAxisId="left" dataKey="attempts" name="Attempts" fill="#9a6a22" radius={[6, 6, 0, 0]} maxBarSize={22} />
-            <Line yAxisId="right" type="monotone" dataKey="average" name="Avg score" stroke="#5c3512" strokeWidth={2.5} dot={false} />
+            <Bar yAxisId="left" dataKey="attempts" name="Attempts" fill="#2f6fb2" radius={[6, 6, 0, 0]} maxBarSize={22} />
+            <Line yAxisId="right" type="monotone" dataKey="average" name="Avg score" stroke="#1a3a6b" strokeWidth={2.5} dot={false} />
           </ComposedChart>
         )
 
@@ -362,10 +362,10 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
       case 'radar':
         return (
           <RadarChart data={data.averageScoreByCategory} outerRadius={130}>
-            <PolarGrid stroke="rgba(92,53,18,0.2)" />
-            <PolarAngleAxis dataKey="category" tick={{ fontSize: 11, fill: '#5c3512' }} />
-            <PolarRadiusAxis tick={{ fontSize: 10, fill: '#8a6a3a' }} angle={30} domain={[0, 100]} />
-            <Radar name="Average" dataKey="average" stroke="#9a6a22" fill="#9a6a22" fillOpacity={0.4} strokeWidth={2.5} />
+            <PolarGrid stroke="rgba(47,111,178,0.2)" />
+            <PolarAngleAxis dataKey="category" tick={{ fontSize: 11, fill: '#1a3a6b' }} />
+            <PolarRadiusAxis tick={{ fontSize: 10, fill: '#6a8ab8' }} angle={30} domain={[0, 100]} />
+            <Radar name="Average" dataKey="average" stroke="#2f6fb2" fill="#2f6fb2" fillOpacity={0.4} strokeWidth={2.5} />
             <Legend verticalAlign="bottom" iconType="circle" iconSize={9} />
             <Tooltip contentStyle={tooltipStyle} />
           </RadarChart>
@@ -375,7 +375,7 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
         return (
           <RadialBarChart innerRadius="18%" outerRadius="100%" data={pp.coinsByProblem} startAngle={90} endAngle={-270}>
             <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-            <RadialBar dataKey="coins" name="Coins" cornerRadius={7} background={{ fill: 'rgba(139,92,40,0.1)' }} />
+            <RadialBar dataKey="coins" name="Coins" cornerRadius={7} background={{ fill: 'rgba(47,111,178,0.1)' }} />
             <Tooltip contentStyle={tooltipStyle} />
             <Legend verticalAlign="bottom" iconType="circle" iconSize={9} />
           </RadialBarChart>
@@ -384,12 +384,12 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
       case 'scatter':
         return (
           <ScatterChart margin={{ top: 12, right: 20, bottom: 34, left: 4 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(92,53,18,0.12)" />
-            <XAxis type="number" dataKey="x" name="Attempts" tick={{ fontSize: 11, fill: '#8a6a3a' }} label={{ value: 'Attempts', position: 'insideBottom', offset: -24, fill: '#8a6a3a', fontSize: 11 }} />
-            <YAxis type="number" dataKey="y" name="Average score" domain={[0, 100]} tick={{ fontSize: 11, fill: '#8a6a3a' }} width={36} />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(47,111,178,0.12)" />
+            <XAxis type="number" dataKey="x" name="Attempts" tick={{ fontSize: 11, fill: '#6a8ab8' }} label={{ value: 'Attempts', position: 'insideBottom', offset: -24, fill: '#6a8ab8', fontSize: 11 }} />
+            <YAxis type="number" dataKey="y" name="Average score" domain={[0, 100]} tick={{ fontSize: 11, fill: '#6a8ab8' }} width={36} />
             <ZAxis type="number" range={[90, 420]} />
             <Tooltip contentStyle={tooltipStyle} cursor={{ strokeDasharray: '3 3' }} />
-            <Scatter data={data.averageScoreByProblem.map((row) => ({ name: row.title, x: row.count, y: row.average }))} fill="#9a6a22" />
+            <Scatter data={data.averageScoreByProblem.map((row) => ({ name: row.title, x: row.count, y: row.average }))} fill="#2f6fb2" />
           </ScatterChart>
         )
 
@@ -398,7 +398,7 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
           <FunnelChart>
             <Tooltip contentStyle={tooltipStyle} />
             <Funnel dataKey="value" data={dist.conversionFunnel} isAnimationActive>
-              <LabelList position="right" fill="#3b2817" stroke="none" dataKey="name" />
+              <LabelList position="right" fill="#191817" stroke="none" dataKey="name" />
             </Funnel>
           </FunnelChart>
         )
@@ -409,8 +409,8 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
             data={data.mostUsedAiCards.map((row) => ({ name: row.title, size: row.count }))}
             dataKey="size"
             nameKey="name"
-            stroke="#fff8eb"
-            fill="#9a6a22"
+            stroke="#ffffff"
+            fill="#2f6fb2"
             content={<TreemapContent />}
           />
         )
@@ -571,16 +571,25 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
 
 const tooltipStyle = {
   borderRadius: 14,
-  border: '1px solid rgba(139, 92, 40, 0.2)',
-  background: 'rgba(255, 248, 235, 0.96)',
-  color: '#3b2817',
+  border: '1px solid rgba(47, 111, 178, 0.2)',
+  background: 'rgba(255, 255, 255, 0.97)',
+  color: '#191817',
   fontSize: '0.82rem',
   fontWeight: 750,
-  boxShadow: '0 12px 30px rgba(80, 52, 20, 0.14)'
+  boxShadow: '0 12px 30px rgba(47, 111, 178, 0.14)'
 }
 
 const dashboardCss = `
-  .adaPage { font-family: inherit; }
+  .adaPage {
+    font-family: inherit;
+    padding: 8px;
+    background:
+      radial-gradient(circle at top right, rgba(131, 180, 247, 0.22), transparent 26rem),
+      radial-gradient(circle at bottom left, rgba(47, 111, 178, 0.1), transparent 30rem),
+      #f6f8fc;
+    min-height: 100vh;
+    border-radius: 24px;
+  }
 
   .adaHeader {
     display: flex;
@@ -593,7 +602,7 @@ const dashboardCss = `
 
   .adaEyebrow {
     margin: 0 0 8px;
-    color: #9a6a22;
+    color: #2f6fb2;
     font-size: 0.74rem;
     font-weight: 850;
     letter-spacing: 0.14em;
@@ -602,13 +611,13 @@ const dashboardCss = `
 
   .adaTitle {
     margin: 0 0 8px;
-    color: #4b2b10;
+    color: #191817;
     font-size: clamp(1.5rem, 3vw, 2.6rem);
     line-height: 1;
     letter-spacing: -0.05em;
   }
 
-  .adaMuted { margin: 0; color: #7a6248; line-height: 1.6; }
+  .adaMuted { margin: 0; color: #5a6b8c; line-height: 1.6; }
 
   .adaHeaderActions {
     display: flex;
@@ -620,20 +629,20 @@ const dashboardCss = `
   .adaSignedIn {
     padding: 7px 14px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.6);
-    border: 1px solid rgba(139, 92, 40, 0.16);
-    color: #5c3512;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(47, 111, 178, 0.18);
+    color: #2f6fb2;
     font-size: 0.78rem;
     font-weight: 850;
   }
 
   .adaButton {
-    border: 1px solid rgba(139, 92, 40, 0.22);
+    border: 1px solid rgba(47, 111, 178, 0.24);
     border-radius: 999px;
     padding: 11px 18px;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.72);
-    color: #5c3512;
+    background: rgba(255, 255, 255, 0.8);
+    color: #2f6fb2;
     font-weight: 850;
   }
 
@@ -643,9 +652,9 @@ const dashboardCss = `
     padding: 11px 18px;
     cursor: pointer;
     font-weight: 850;
-    background: linear-gradient(135deg, #9a6a22, #5c3512);
-    color: #fff8eb;
-    box-shadow: 0 12px 28px rgba(92, 53, 18, 0.24);
+    background: linear-gradient(135deg, #2f6fb2, #1a3a6b);
+    color: #ffffff;
+    box-shadow: 0 12px 28px rgba(47, 111, 178, 0.24);
   }
 
   .adaMetricGrid {
@@ -661,9 +670,9 @@ const dashboardCss = `
     gap: 12px;
     padding: 16px 18px;
     border-radius: 22px;
-    background: rgba(255, 255, 255, 0.78);
-    border: 1px solid rgba(139, 92, 40, 0.16);
-    box-shadow: 0 14px 34px rgba(80, 52, 20, 0.1);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(47, 111, 178, 0.16);
+    box-shadow: 0 14px 34px rgba(47, 111, 178, 0.1);
   }
 
   .adaMetricIcon { font-size: 1.5rem; }
@@ -672,13 +681,13 @@ const dashboardCss = `
     margin: 0;
     font-size: 1.45rem;
     font-weight: 950;
-    color: #4b2b10;
+    color: #191817;
     line-height: 1;
   }
 
   .adaMetricLabel {
     margin: 4px 0 0;
-    color: #7a6248;
+    color: #5a6b8c;
     font-size: 0.74rem;
     font-weight: 800;
     text-transform: uppercase;
@@ -688,14 +697,14 @@ const dashboardCss = `
   .adaPanel {
     padding: 24px;
     border-radius: 24px;
-    background: rgba(255, 255, 255, 0.82);
-    border: 1px solid rgba(139, 92, 40, 0.16);
-    box-shadow: 0 16px 40px rgba(80, 52, 20, 0.1);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(47, 111, 178, 0.16);
+    box-shadow: 0 16px 40px rgba(47, 111, 178, 0.1);
   }
 
   .adaSectionTitle {
     margin: 0 0 16px;
-    color: #4b2b10;
+    color: #191817;
     font-size: 1.2rem;
     letter-spacing: -0.02em;
   }
@@ -707,22 +716,22 @@ const dashboardCss = `
   .adaTable th {
     padding: 12px 14px;
     text-align: left;
-    color: #5c3512;
+    color: #2f6fb2;
     font-size: 0.72rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    border-bottom: 1px solid rgba(139, 92, 40, 0.2);
-    background: rgba(244, 210, 138, 0.22);
+    border-bottom: 1px solid rgba(47, 111, 178, 0.2);
+    background: rgba(131, 180, 247, 0.18);
   }
 
   .adaTable td {
     padding: 13px 14px;
-    color: #3b2817;
-    border-bottom: 1px solid rgba(139, 92, 40, 0.12);
+    color: #191817;
+    border-bottom: 1px solid rgba(47, 111, 178, 0.12);
     font-size: 0.86rem;
   }
 
-  .adaName { font-weight: 850; color: #4b2b10; }
+  .adaName { font-weight: 850; color: #191817; }
 
   .adaStatus {
     display: inline-block;
@@ -745,7 +754,7 @@ const dashboardCss = `
   }
 
   .adaPickerLabel {
-    color: #5c3512;
+    color: #2f6fb2;
     font-weight: 850;
     font-size: 0.9rem;
   }
@@ -756,20 +765,20 @@ const dashboardCss = `
     max-width: 520px;
     padding: 14px 16px;
     border-radius: 16px;
-    border: 1px solid rgba(139, 92, 40, 0.24);
-    background: rgba(255, 255, 255, 0.82);
-    color: #3b2817;
+    border: 1px solid rgba(47, 111, 178, 0.24);
+    background: rgba(255, 255, 255, 0.9);
+    color: #191817;
     font-weight: 750;
     outline: none;
-    box-shadow: 0 10px 26px rgba(80, 52, 20, 0.08);
+    box-shadow: 0 10px 26px rgba(47, 111, 178, 0.08);
   }
 
   .adaChartCard {
     padding: 22px;
     border-radius: 24px;
-    background: rgba(255, 255, 255, 0.82);
-    border: 1px solid rgba(139, 92, 40, 0.16);
-    box-shadow: 0 16px 40px rgba(80, 52, 20, 0.12);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(47, 111, 178, 0.16);
+    box-shadow: 0 16px 40px rgba(47, 111, 178, 0.12);
   }
 
   .adaChartHead {
@@ -781,7 +790,7 @@ const dashboardCss = `
 
   .adaChartEyebrow {
     margin: 0 0 6px;
-    color: #9a6a22;
+    color: #2f6fb2;
     font-size: 0.68rem;
     font-weight: 850;
     letter-spacing: 0.12em;
@@ -790,7 +799,7 @@ const dashboardCss = `
 
   .adaChartTitle {
     margin: 0;
-    color: #4b2b10;
+    color: #191817;
     font-size: 1.1rem;
     letter-spacing: -0.02em;
   }
@@ -798,8 +807,8 @@ const dashboardCss = `
   .adaChartShape {
     padding: 5px 12px;
     border-radius: 999px;
-    background: rgba(244, 210, 138, 0.4);
-    color: #5c3512;
+    background: rgba(131, 180, 247, 0.28);
+    color: #2f6fb2;
     font-size: 0.7rem;
     font-weight: 850;
     white-space: nowrap;
@@ -807,7 +816,7 @@ const dashboardCss = `
 
   .adaChartDesc {
     margin: 10px 0 16px;
-    color: #7a6248;
+    color: #5a6b8c;
     font-size: 0.86rem;
     line-height: 1.55;
   }
@@ -832,13 +841,13 @@ const dashboardCss = `
   .adaGaList {
     padding: 20px;
     border-radius: 22px;
-    background: rgba(255, 255, 255, 0.72);
-    border: 1px solid rgba(139, 92, 40, 0.14);
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(47, 111, 178, 0.14);
   }
 
   .adaGaListTitle {
     margin: 0 0 14px;
-    color: #4b2b10;
+    color: #191817;
     font-size: 1rem;
     letter-spacing: -0.02em;
   }
@@ -855,7 +864,7 @@ const dashboardCss = `
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: #3b2817;
+    color: #191817;
     font-size: 0.84rem;
     font-weight: 750;
   }
@@ -863,23 +872,27 @@ const dashboardCss = `
   .adaGaBarTrack {
     height: 9px;
     border-radius: 999px;
-    background: rgba(139, 92, 40, 0.12);
+    background: rgba(47, 111, 178, 0.12);
     overflow: hidden;
   }
 
   .adaGaBar {
     height: 100%;
     border-radius: 999px;
-    background: linear-gradient(90deg, #d9a441, #9a6a22);
+    background: linear-gradient(90deg, #83b4f7, #2f6fb2);
   }
 
-  .adaGaBarDark {
-    background: linear-gradient(90deg, #5c3512, #9a6a22);
+  .adaGaBarBlue {
+    background: linear-gradient(90deg, #83b4f7, #2f6fb2);
+  }
+
+  .adaGaBarDeep {
+    background: linear-gradient(90deg, #2f6fb2, #1a3a6b);
   }
 
   .adaGaRowCount {
     text-align: right;
-    color: #5c3512;
+    color: #2f6fb2;
     font-weight: 900;
     font-size: 0.84rem;
   }
