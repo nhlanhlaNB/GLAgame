@@ -194,6 +194,123 @@ function getCertificateCountFromUsers(users, certificates) {
   return Math.max(fromUsers, certificates.length)
 }
 
+function getDayKey(millis) {
+  const date = new Date(millis)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+function getDayLabel(millis) {
+  const date = new Date(millis)
+  return `${date.getDate()}/${date.getMonth() + 1}`
+}
+
+function buildDailySeries(rows, dateGetter, valueGetter, days = 30) {
+  const today = new Date()
+  const map = {}
+  const labels = []
+
+  for (let i = days - 1; i >= 0; i -= 1) {
+    const date = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - i
+    )
+    const key = getDayKey(date.getTime())
+    map[key] = { key, label: getDayLabel(date.getTime()), value: 0 }
+    labels.push(key)
+  }
+
+  rows.forEach((row) => {
+    const millis = timestampToMillis(dateGetter(row))
+    if (!millis) return
+
+    const key = getDayKey(millis)
+    if (!map[key]) return
+
+    map[key].value += toNumber(valueGetter(row))
+  })
+
+  return labels.map((key) => map[key])
+}
+
+function buildDailyAverageSeries(rows, dateGetter, scoreGetter, days = 30) {
+  const today = new Date()
+  const map = {}
+  const labels = []
+
+  for (let i = days - 1; i >= 0; i -= 1) {
+    const date = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - i
+    )
+    const key = getDayKey(date.getTime())
+    map[key] = {
+      key,
+      label: getDayLabel(date.getTime()),
+      total: 0,
+      count: 0,
+      average: 0
+    }
+    labels.push(key)
+  }
+
+  rows.forEach((row) => {
+    const millis = timestampToMillis(dateGetter(row))
+    if (!millis) return
+
+    const key = getDayKey(millis)
+    if (!map[key]) return
+
+    map[key].total += toNumber(scoreGetter(row))
+    map[key].count += 1
+  })
+
+  return labels.map((key) => ({
+    ...map[key],
+    average:
+      map[key].count > 0 ? Math.round(map[key].total / map[key].count) : 0
+  }))
+}
+
+function buildScoreDistribution(rows, scoreGetter) {
+  const labels = [
+    '0-9',
+    '10-19',
+    '20-29',
+    '30-39',
+    '40-49',
+    '50-59',
+    '60-69',
+    '70-79',
+    '80-89',
+    '90-100'
+  ]
+  const counts = Array(10).fill(0)
+
+  rows.forEach((row) => {
+    const score = Math.max(0, Math.min(100, toNumber(scoreGetter(row))))
+    counts[Math.min(9, Math.floor(score / 10))] += 1
+  })
+
+  return labels.map((range, index) => ({
+    range,
+    count: counts[index]
+  }))
+}
+
+function buildSplit(label, value, total) {
+  return {
+    label,
+    value: toNumber(value),
+    percent:
+      total > 0 ? Math.round((toNumber(value) / total) * 100) : 0
+  }
+}
+
 export async function getAdminDashboardStats() {
   const [users, problemCards, aiCards, certificates, hintRequests] =
     await Promise.all([
@@ -473,6 +590,136 @@ export async function getAdminAnalyticsDashboardData() {
     }))
     .slice(0, 10)
 
+  const attemptUsers = {}
+  attempts.forEach((attempt) => {
+    const userId = getAttemptUserId(attempt)
+    if (!userId) return
+    attemptUsers[userId] = (attemptUsers[userId] || 0) + 1
+  })
+
+  const topPlayers = playerUsers
+    .map((user) => {
+      const userId = getUserId(user) || user.firestoreId
+      return {
+        id: user.firestoreId || userId,
+        name: getFullName(user),
+        email: user.email || '',
+        status: String(user.accountStatus || 'active'),
+        completed: toNumber(user.completedProblemCount),
+        average: toNumber(user.averageScore),
+        best: toNumber(user.bestScore),
+        coins: toNumber(user.glaCoinBalance),
+        attempts: userId ? attemptUsers[userId] || 0 : 0,
+        certificate:
+          user.certificateUnlocked || user.certificateId ? 'Issued' : 'Pending',
+        lastLogin:
+          timestampToMillis(user.lastLoginAt) ||
+          timestampToMillis(user.updatedAt) ||
+          timestampToMillis(user.createdAt)
+      }
+    })
+    .filter((player) => player.completed > 0 || player.attempts > 0)
+    .sort(
+      (a, b) =>
+        b.completed - a.completed ||
+        b.average - a.average ||
+        b.attempts - a.attempts
+    )
+    .slice(0, 50)
+
+  const playersOverTime = buildDailySeries(
+    playerUsers,
+    (user) => user.createdAt || user.registeredAt,
+    () => 1
+  )
+  const attemptsOverTime = buildDailySeries(
+    attempts,
+    (attempt) => attempt.createdAt,
+    () => 1
+  )
+  const hintsOverTime = buildDailySeries(
+    hintRequests,
+    (hint) => hint.createdAt,
+    () => 1
+  )
+  const coinsOverTime = buildDailySeries(
+    attempts,
+    (attempt) => attempt.createdAt,
+    (attempt) => getAttemptScore(attempt)
+  )
+  const averageScoreOverTime = buildDailyAverageSeries(
+    attempts,
+    (attempt) => attempt.createdAt,
+    (attempt) => getAttemptScore(attempt)
+  )
+
+  const scoreDistribution = buildScoreDistribution(
+    scoreRows,
+    (row) => getAttemptScore(row)
+  )
+
+  const activeVsRegistered = [
+    buildSplit('Registered', playerUsers.length, playerUsers.length),
+    buildSplit('Active', activePlayers.length, playerUsers.length)
+  ]
+
+  const completionSplit = [
+    buildSplit('Completed 10+', completedPlayers.length, playerUsers.length),
+    buildSplit('In progress', playerUsers.length - completedPlayers.length, playerUsers.length)
+  ]
+
+  const replaySplit = [
+    buildSplit('Replayed', replayUsers.size, playerUsers.length),
+    buildSplit('Single play', playerUsers.length - replayUsers.size, playerUsers.length)
+  ]
+
+  const certificateSplit = [
+    buildSplit('Issued', getCertificateCountFromUsers(playerUsers, certificates), playerUsers.length),
+    buildSplit('Pending', Math.max(0, playerUsers.length - getCertificateCountFromUsers(playerUsers, certificates)), playerUsers.length)
+  ]
+
+  const playerStatusSplit = [
+    buildSplit('Active', activePlayers.length, playerUsers.length),
+    buildSplit('Inactive', playerUsers.length - activePlayers.length, playerUsers.length)
+  ]
+
+  const coinsByProblem = getAverageRows(
+    scoreRows,
+    (row) => getProblemId(row),
+    (row) => getAttemptScore(row),
+    (row) => getProblemTitle(row, problemCardsById)
+  )
+    .map((row) => ({
+      id: row.id,
+      title: row.title,
+      coins: row.average,
+      count: row.count
+    }))
+    .slice(0, 10)
+
+  const hintsByProblem = countRows(
+    hintRequests,
+    (hint) => hint.problemId || hint.problemCardId || hint.cardId
+  )
+    .map((row) => ({
+      id: row.id,
+      title:
+        hintRequests.find(
+          (hint) =>
+            String(hint.problemId || hint.problemCardId || hint.cardId) ===
+            String(row.id)
+        )?.problemTitle ||
+        hintRequests.find(
+          (hint) =>
+            String(hint.problemId || hint.problemCardId || hint.cardId) ===
+            String(row.id)
+        )?.problemCardTitle ||
+        problemCardsById[row.id]?.title ||
+        `Problem ${row.id}`,
+      count: row.count
+    }))
+    .slice(0, 10)
+
   return {
     metrics: {
       registeredPlayers: playerUsers.length,
@@ -490,6 +737,26 @@ export async function getAdminAnalyticsDashboardData() {
     mostUsedAiCards,
     commonCombinations,
     averageScoreByProblem,
-    averageScoreByCategory
+    averageScoreByCategory,
+    trends: {
+      playersOverTime,
+      attemptsOverTime,
+      hintsOverTime,
+      coinsOverTime,
+      averageScoreOverTime
+    },
+    distributions: {
+      scoreDistribution,
+      activeVsRegistered,
+      completionSplit,
+      replaySplit,
+      certificateSplit,
+      playerStatusSplit
+    },
+    perProblem: {
+      coinsByProblem,
+      hintsByProblem
+    },
+    topPlayers
   }
 }

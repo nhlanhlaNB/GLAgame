@@ -23,7 +23,7 @@ function AdminLayout({ adminUser, activeScreen, onScreenChange, onLogout, childr
     { id: 'feedback-inbox', label: t('feedbackInbox', 'Feedback Inbox'), icon: '📥', description: 'Issues' },
     { id: 'card-images', label: t('cardImages', 'Card Images'), icon: '🖼️', description: 'Assets' },
     { id: 'certificate-templates', label: t('certificates', 'Certificates'), icon: '🎓', description: 'Templates' },
-    { id: 'analytics', label: t('analytics', 'Analytics Dashboard'), icon: '📈', description: 'Impact' },
+    { href: '/admin/analytics', label: t('analytics', 'Analytics Dashboard'), icon: '📈', description: 'Impact' },
     { id: 'google-analytics', label: t('googleAnalytics', 'Google Analytics'), icon: '🔎', description: 'Events' },
     { id: 'reports', label: t('reports', 'Reports'), icon: '📤', description: 'Export' }
   ]
@@ -42,20 +42,34 @@ function AdminLayout({ adminUser, activeScreen, onScreenChange, onLogout, childr
         </div>
 
         <nav className="adminNav">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => onScreenChange(item.id)}
-              className={`adminNavButton ${activeScreen === item.id ? 'active' : ''}`}
-            >
-              <span className="adminNavIcon">{item.icon}</span>
-              <span>
-                <span className="adminNavLabel">{item.label}</span>
-                <span className="adminNavDescription">{item.description}</span>
-              </span>
-            </button>
-          ))}
+          {navItems.map((item) =>
+            item.href ? (
+              <a
+                key={item.href}
+                href={item.href}
+                className="adminNavButton"
+              >
+                <span className="adminNavIcon">{item.icon}</span>
+                <span>
+                  <span className="adminNavLabel">{item.label}</span>
+                  <span className="adminNavDescription">{item.description}</span>
+                </span>
+              </a>
+            ) : (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => onScreenChange(item.id)}
+                className={`adminNavButton ${activeScreen === item.id ? 'active' : ''}`}
+              >
+                <span className="adminNavIcon">{item.icon}</span>
+                <span>
+                  <span className="adminNavLabel">{item.label}</span>
+                  <span className="adminNavDescription">{item.description}</span>
+                </span>
+              </button>
+            )
+          )}
         </nav>
 
         <div className="adminSidebarFooter">
@@ -98,7 +112,7 @@ const layoutCss = `
 .adminSidebarTop h1 { margin:0; font-size:1.05rem; line-height:1.15; letter-spacing:-.04em; }
 .adminSidebarTop p { margin:4px 0 0; color:rgba(255,248,235,.64); font-size:.76rem; }
 .adminNav { display:grid; gap:7px; }
-.adminNavButton { width:100%; border:1px solid transparent; border-radius:18px; padding:10px 11px; display:grid; grid-template-columns:36px 1fr; gap:10px; align-items:center; text-align:left; cursor:pointer; background:transparent; color:rgba(255,248,235,.78); transition:.2s; }
+.adminNavButton { width:100%; border:1px solid transparent; border-radius:18px; padding:10px 11px; display:grid; grid-template-columns:36px 1fr; gap:10px; align-items:center; text-align:left; cursor:pointer; background:transparent; color:rgba(255,248,235,.78); transition:.2s; text-decoration:none; box-sizing:border-box; }
 .adminNavButton:hover { transform:translateX(3px); background:rgba(255,255,255,.08); border-color:rgba(244,210,138,.18); }
 .adminNavButton.active { background:rgba(244,210,138,.14); color:#fff8eb; border-color:rgba(244,210,138,.28); }
 .adminNavIcon { width:36px; height:36px; border-radius:14px; display:grid; place-items:center; background:rgba(255,255,255,.08); }
