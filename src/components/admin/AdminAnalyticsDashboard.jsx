@@ -560,6 +560,14 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
             <p className="adaChartDesc">{selectedOption.description}</p>
             <div className="adaChartBody">{renderSelectedChart()}</div>
           </div>
+        ) : selectedOption.id === 'map' ? (
+          <ChartCard
+            title={selectedOption.label}
+            shape={selectedOption.shape}
+            description={selectedOption.description}
+          >
+            {renderSelectedChart()}
+          </ChartCard>
         ) : (
           <ChartCard
             title={selectedOption.label}
@@ -905,22 +913,51 @@ const dashboardCss = `
   }
 
   .adaMapWrap {
+    position: relative;
     border-radius: 18px;
     overflow: hidden;
     border: 1px solid rgba(47, 111, 178, 0.18);
     box-shadow: 0 10px 28px rgba(47, 111, 178, 0.1);
-    background: #f6f8fc;
+    background: #eaf0f8;
   }
 
   .adaMapCanvas {
+    position: relative;
     width: 100%;
+    height: 100%;
     border-radius: 18px;
     background: #eaf0f8;
   }
 
   .adaMapCanvas .leaflet-container {
+    width: 100%;
+    height: 100%;
     font-family: inherit;
     border-radius: 18px;
+  }
+
+  .adaMapStatus {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 24px;
+    background: rgba(246, 248, 252, 0.92);
+  }
+
+  .adaMapStatusTitle {
+    margin: 0 0 6px;
+    color: #191817;
+    font-weight: 850;
+    font-size: 1rem;
+  }
+
+  .adaMapStatusSub {
+    margin: 0;
+    color: #5a6b8c;
+    font-size: 0.86rem;
+    line-height: 1.5;
   }
 
   .adaMapPin {

@@ -1,9 +1,30 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
 const ACCENT = '#2f6fb2'
 const LIGHT = '#83b4f7'
+
+const TILE_SOURCES = [
+  {
+    label: 'OpenStreetMap',
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    options: {
+      maxZoom: 19,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }
+  },
+  {
+    label: 'Carto Light',
+    url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+    options: {
+      maxZoom: 20,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    }
+  }
+]
 
 function buildIcon(color, pulse = false) {
   const size = pulse ? 26 : 20
@@ -27,6 +48,8 @@ function PlayerLocationMap({ markers = [], height = 380 }) {
   const containerRef = useRef(null)
   const mapRef = useRef(null)
   const layerRef = useRef(null)
+  const tileIndexRef = useRef(0)
+  const [tileStatus, setTileStatus] = useState('loading')
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -37,16 +60,60 @@ function PlayerLocationMap({ markers = [], height = 380 }) {
       scrollWheelZoom: false
     }).setView([-4.5, 22], 3)
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map)
+    let loadedCount = 0
+    let erroredCount = 0
+
+    const addTileSource = (index) => {
+      if (index >= TILE_SOURCES.length) {
+        setTileStatus('offline')
+        return
+      }
+
+      const source = TILE_SOURCES[index]
+      const layer = L.tileLayer(source.url, source.options)
+
+      layer.on('tileerror', () => {
+        erroredCount += 1
+
+        if (loadedCount === 0 && erroredCount >= 4) {
+          layer.remove()
+          addTileSource(index + 1)
+        }
+      })
+
+      layer.on('load', () => {
+        loadedCount += 1
+        setTileStatus('loaded')
+      })
+
+      layer.addTo(map)
+      tileIndexRef.current = index
+    }
+
+    addTileSource(0)
 
     mapRef.current = map
     layerRef.current = L.layerGroup().addTo(map)
 
+    const resizeTimer = window.setTimeout(() => {
+      if (mapRef.current) {
+        mapRef.current.invalidateSize()
+      }
+    }, 350)
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (mapRef.current) {
+        mapRef.current.invalidateSize()
+      }
+    })
+
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current)
+    }
+
     return () => {
+      window.clearTimeout(resizeTimer)
+      resizeObserver.disconnect()
       map.remove()
       mapRef.current = null
       layerRef.current = null
@@ -116,11 +183,26 @@ function PlayerLocationMap({ markers = [], height = 380 }) {
     } else if (totalBounds.length === 1) {
       map.setView(totalBounds[0], 6)
     }
+
+    window.setTimeout(() => {
+      if (mapRef.current) {
+        mapRef.current.invalidateSize()
+      }
+    }, 200)
   }, [markers])
 
   return (
-    <div className="adaMapWrap">
-      <div ref={containerRef} style={{ height }} className="adaMapCanvas" />
+    <div className="adaMapWrap" style={{ height }}>
+      <div ref={containerRef} className="adaMapCanvas" />
+      {tileStatus === 'offline' ? (
+        <div className="adaMapStatus">
+          <p className="adaMapStatusTitle">Map could not load</p>
+          <p className="adaMapStatusSub">
+            Tile servers could not be reached. Check your internet connection
+            and try again.
+          </p>
+        </div>
+      ) : null}
     </div>
   )
 }
