@@ -43,20 +43,41 @@ function formatDate(millis) {
   })
 }
 
-function ProblemCard({ number, icon, title, question, insight, insightTone = 'default', children }) {
+function ProblemCard({
+  number,
+  icon,
+  title,
+  question,
+  insight,
+  insightTone = 'default',
+  children,
+  collapsed = false
+}) {
+  const [open, setOpen] = useState(!collapsed)
+
   return (
-    <div className="adaProblemCard">
-      <div className="adaProblemHead">
+    <div className={`adaProblemCard${open ? ' adaProblemCard-open' : ''}`}>
+      <button
+        type="button"
+        className="adaProblemToggle"
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+      >
         <span className="adaProblemIcon">{icon}</span>
-        <div>
-          <p className="adaProblemQuestion">{question}</p>
-          <h3 className="adaProblemTitle">
+        <span className="adaProblemHead">
+          <span className="adaProblemQuestion">{question}</span>
+          <span className="adaProblemTitle">
             {number}. {title}
-          </h3>
+          </span>
+        </span>
+        <span className={`adaChevron${open ? ' adaChevron-open' : ''}`} />
+      </button>
+      {open ? (
+        <div className="adaProblemBody">
+          <p className={`adaProblemInsight adaInsight-${insightTone}`}>{insight}</p>
+          <div className="adaChartBody">{children}</div>
         </div>
-      </div>
-      <p className={`adaProblemInsight adaInsight-${insightTone}`}>{insight}</p>
-      <div className="adaChartBody">{children}</div>
+      ) : null}
     </div>
   )
 }
@@ -262,12 +283,29 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
       <MetricStrip metrics={data.metrics} />
 
       <div className="adaProblemGrid">
-        {/* 1. Where do players drop off in the learning journey? */}
+        {/* 1. Where are players playing from? */}
         <ProblemCard
           number={1}
+          icon="🗺️"
+          title="Players by Location"
+          question="Where in the world is the game being played from?"
+          insight={
+            data.playerLocations?.markers?.length > 0
+              ? `${data.playerLocations.markers.length} located players across ${data.playerLocations.countries.length || 0} countries`
+              : 'No player locations captured yet — locations appear once players open the game.'
+          }
+          insightTone="default"
+        >
+          <PlayerLocationMap markers={data.playerLocations?.markers || []} />
+        </ProblemCard>
+
+        {/* 2. Where do players drop off in the learning journey? */}
+        <ProblemCard
+          number={2}
           icon="🎓"
           title="Learning Journey Drop-off"
           question="Where do players lose momentum on the way to certification?"
+          collapsed
           insight={
             insights.worstDrop?.pct > 0
               ? `Biggest drop: ${insights.worstDrop.from} → ${insights.worstDrop.to} (−${insights.worstDrop.pct}%)`
@@ -300,10 +338,11 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
 
         {/* 2. Which problems are hardest for players? */}
         <ProblemCard
-          number={2}
+          number={3}
           icon="🧩"
           title="Hardest Problem Cards"
           question="Which problems do players score lowest on?"
+          collapsed
           insight={
             insights.hardestProblem
               ? `Hardest: "${insights.hardestProblem.title}" at ${insights.hardestProblem.average}% average`
@@ -339,10 +378,11 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
 
         {/* 3. Do players come back and replay? */}
         <ProblemCard
-          number={3}
+          number={4}
           icon="🔁"
           title="Replay & Retention"
           question="How many players come back to play problems more than once?"
+          collapsed
           insight={
             replayRate > 0
               ? `${replayRate}% of players replayed at least one problem.`
@@ -377,6 +417,7 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
           icon="💡"
           title="Hint Dependency"
           question="Are players relying on hints too heavily to solve problems?"
+          collapsed
           insight={
             data.metrics.attempts > 0
               ? `On average each attempt uses ${insights.hintsPerAttempt} hint(s).`
@@ -415,6 +456,7 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
           icon="📐"
           title="Scoring Category Profile"
           question="Which AI-thinking skills do players score weakest on?"
+          collapsed
           insight={
             insights.weakestCategory
               ? `Weakest skill: ${insights.weakestCategory.category} (${insights.weakestCategory.average}% avg)`
@@ -449,6 +491,7 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
           icon="📌"
           title="Most Selected Problems"
           question="Which problem cards are players choosing most often?"
+          collapsed
           insight={
             insights.topProblem
               ? `Top pick: "${insights.topProblem.title}" (${insights.topProblem.count} selections)`
@@ -485,6 +528,7 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
           icon="🤖"
           title="Most Used AI Cards"
           question="Which AI capabilities are players applying most in their solutions?"
+          collapsed
           insight={
             insights.topAiCard
               ? `Most used: "${insights.topAiCard.title}" (${insights.topAiCard.count} uses)`
@@ -521,6 +565,7 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
           icon="📈"
           title="Daily Engagement Trend"
           question="Is player activity growing, steady, or slowing down?"
+          collapsed
           insight={
             insights.engagementDir === 'up'
               ? 'Engagement is trending upward — activity is growing.'
@@ -552,16 +597,6 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
             </ComposedChart>
           </ResponsiveContainer>
         </ProblemCard>
-      </div>
-
-      <div className="adaPanel" style={{ marginBottom: 22 }}>
-        <p className="adaEyebrow">Players by location</p>
-        <h3 className="adaSectionTitle">Where players are playing from</h3>
-        <p className="adaMuted" style={{ marginBottom: 14 }}>
-          {data.playerLocations?.markers?.length || 0} located players ·{' '}
-          {(data.playerLocations?.countries?.length) || 0} countries
-        </p>
-        <PlayerLocationMap markers={data.playerLocations?.markers || []} />
       </div>
 
       <div className="adaPanel">
@@ -740,18 +775,43 @@ const dashboardCss = `
   .adaProblemCard {
     display: flex;
     flex-direction: column;
-    padding: 22px;
+    padding: 0;
     border-radius: 24px;
     background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(47, 111, 178, 0.16);
     box-shadow: 0 16px 40px rgba(47, 111, 178, 0.1);
+    overflow: hidden;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+  }
+
+  .adaProblemCard-open {
+    box-shadow: 0 18px 44px rgba(47, 111, 178, 0.16);
+  }
+
+  .adaProblemToggle {
+    display: flex;
+    width: 100%;
+    gap: 14px;
+    align-items: center;
+    text-align: left;
+    padding: 18px 20px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+  }
+
+  .adaProblemToggle:hover .adaProblemTitle {
+    color: #2f6fb2;
   }
 
   .adaProblemHead {
     display: flex;
-    gap: 14px;
-    align-items: flex-start;
-    margin-bottom: 10px;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    flex: 1;
   }
 
   .adaProblemIcon {
@@ -766,7 +826,7 @@ const dashboardCss = `
   }
 
   .adaProblemQuestion {
-    margin: 0 0 4px;
+    margin: 0;
     color: #5a6b8c;
     font-size: 0.8rem;
     font-weight: 800;
@@ -778,6 +838,25 @@ const dashboardCss = `
     color: #191817;
     font-size: 1.15rem;
     letter-spacing: -0.02em;
+    transition: color 0.2s ease;
+  }
+
+  .adaChevron {
+    width: 10px;
+    height: 10px;
+    border-right: 2.5px solid #2f6fb2;
+    border-bottom: 2.5px solid #2f6fb2;
+    transform: rotate(45deg) translateY(-2px);
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .adaChevron-open {
+    transform: rotate(225deg) translateY(-2px);
+  }
+
+  .adaProblemBody {
+    padding: 0 20px 22px;
   }
 
   .adaProblemInsight {
@@ -921,8 +1000,8 @@ const dashboardCss = `
   }
 
   @keyframes adaPinPulse {
-    0% { opacity: 0.85; }
-    70% { opacity: 0.15; }
+    0% { opacity: 0.9; }
+    70% { opacity: 0.25; }
     100% { opacity: 0; }
   }
 

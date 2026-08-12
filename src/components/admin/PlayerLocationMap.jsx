@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
-const ACCENT = '#2f6fb2'
-const LIGHT = '#83b4f7'
+const ACCENT = '#0d47a1'
+const LIGHT = '#1565c0'
 
 const TILE_SOURCES = [
   {
@@ -27,7 +27,7 @@ const TILE_SOURCES = [
 ]
 
 function buildIcon(color, pulse = false) {
-  const size = pulse ? 26 : 20
+  const size = pulse ? 34 : 26
 
   return L.divIcon({
     className: 'adaMapPin',
@@ -35,7 +35,7 @@ function buildIcon(color, pulse = false) {
       width:${size}px;height:${size}px;border-radius:50% 50% 50% 0;
       transform:rotate(-45deg);border:3px solid #ffffff;
       background:${color};
-      box-shadow:0 4px 12px rgba(26,58,107,0.35);
+      box-shadow:0 6px 16px rgba(13,71,161,0.5), 0 0 0 2px rgba(255,255,255,0.9), inset 0 0 0 2px rgba(255,255,255,0.35);
       ${pulse ? 'animation:adaPinPulse 1.8s ease-out infinite;' : ''}
     "></div>`,
     iconSize: [size, size],
