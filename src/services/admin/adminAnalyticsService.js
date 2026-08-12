@@ -302,6 +302,62 @@ function buildScoreDistribution(rows, scoreGetter) {
   }))
 }
 
+function buildPlayerLocations(playerUsers) {
+  const markers = playerUsers
+    .map((user) => {
+      const location = user.location || {}
+
+      const latitude = toNumber(
+        location.latitude || location.lat || location.coordinates?.latitude
+      )
+      const longitude = toNumber(
+        location.longitude || location.lng || location.coordinates?.longitude
+      )
+
+      if (!latitude && !longitude) return null
+
+      const country =
+        location.country ||
+        user.country ||
+        (longitude ? 'Unknown location' : '')
+
+      const city =
+        location.city ||
+        location.region ||
+        location.principalSubdivision ||
+        ''
+
+      const userId = getUserId(user) || user.firestoreId || user.email
+
+      return {
+        id: user.firestoreId || userId,
+        name: getFullName(user),
+        userId,
+        latitude,
+        longitude,
+        country,
+        city,
+        countryCode:
+          location.countryCode || user.countryCode || '',
+        capturedAt:
+          timestampToMillis(location.capturedAt || user.locationUpdatedAt) || 0
+      }
+    })
+    .filter(Boolean)
+
+  const byCountry = {}
+  markers.forEach((marker) => {
+    const key = marker.country || 'Unknown location'
+    byCountry[key] = (byCountry[key] || 0) + 1
+  })
+
+  const countries = Object.entries(byCountry)
+    .map(([country, count]) => ({ country, count }))
+    .sort((a, b) => b.count - a.count)
+
+  return { markers, countries }
+}
+
 function buildSplit(label, value, total) {
   return {
     label,
@@ -764,6 +820,7 @@ export async function getAdminAnalyticsDashboardData() {
       coinsByProblem,
       hintsByProblem
     },
-    topPlayers
+    topPlayers,
+    playerLocations: buildPlayerLocations(playerUsers)
   }
 }

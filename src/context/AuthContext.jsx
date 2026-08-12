@@ -8,6 +8,7 @@ import {
 } from 'firebase/auth'
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { auth, db } from '../firebase'
+import { capturePlayerLocation } from '../services/player/playerLocationService'
 
 const AuthContext = createContext(null)
 
@@ -107,6 +108,10 @@ async function ensureUserDocument(user) {
     },
     { merge: true }
   )
+
+  if (!userData.location) {
+    capturePlayerLocation(user.uid).catch(() => {})
+  }
 }
 
 export function AuthProvider({ children }) {
@@ -135,6 +140,8 @@ export function AuthProvider({ children }) {
       updatedAt: serverTimestamp(),
       lastLoginAt: serverTimestamp()
     })
+
+    capturePlayerLocation(userCredential.user.uid).catch(() => {})
 
     return userCredential
   }

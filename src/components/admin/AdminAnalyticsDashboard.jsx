@@ -33,6 +33,7 @@ import {
 } from 'recharts'
 import { getAdminAnalyticsDashboardData } from '../../services/admin/adminAnalyticsService'
 import { getGoogleAnalyticsData } from '../../services/admin/adminGoogleAnalyticsService'
+import PlayerLocationMap from './PlayerLocationMap'
 
 const PALETTE = ['#2f6fb2', '#83b4f7', '#1a3a6b', '#5b9ad9', '#9cc3ef', '#37618f', '#b8d3f2', '#6a8ab8']
 
@@ -48,6 +49,7 @@ const CHART_OPTIONS = [
   { id: 'scatter', label: 'Score vs Attempts (Bubble)', shape: 'Scatter chart', description: 'Each bubble is a problem card: position shows average score (Y) and number of attempts (X), bubble size = attempts.' },
   { id: 'funnel', label: 'Learning Conversion Funnel', shape: 'Funnel chart', description: 'Shows how many players move from registered → active → completed 10+ problems → certified.' },
   { id: 'treemap', label: 'Most Used AI Cards (Treemap)', shape: 'Treemap', description: 'Tiles sized by how often each AI card was used; larger tiles = more usage.' },
+  { id: 'map', label: 'Players by Location (Map)', shape: 'Map', description: 'A live world map showing where players are playing from, using location data captured at signup.' },
   { id: 'google', label: 'Google Analytics Overview', shape: 'Overview', description: 'Event analytics mirrored from Google Analytics (Firebase) — totals, top events and recent activity.' }
 ]
 
@@ -413,6 +415,11 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
             fill="#2f6fb2"
             content={<TreemapContent />}
           />
+        )
+
+      case 'map':
+        return (
+          <PlayerLocationMap markers={data.playerLocations?.markers || []} />
         )
 
       case 'google':
@@ -895,6 +902,56 @@ const dashboardCss = `
     color: #2f6fb2;
     font-weight: 900;
     font-size: 0.84rem;
+  }
+
+  .adaMapWrap {
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(47, 111, 178, 0.18);
+    box-shadow: 0 10px 28px rgba(47, 111, 178, 0.1);
+    background: #f6f8fc;
+  }
+
+  .adaMapCanvas {
+    width: 100%;
+    border-radius: 18px;
+    background: #eaf0f8;
+  }
+
+  .adaMapCanvas .leaflet-container {
+    font-family: inherit;
+    border-radius: 18px;
+  }
+
+  .adaMapPin {
+    background: transparent;
+    border: 0;
+  }
+
+  .adaMapPopTitle {
+    margin: 0 0 4px;
+    color: #191817;
+    font-weight: 850;
+    font-size: 0.95rem;
+  }
+
+  .adaMapPopSub {
+    margin: 0 0 8px;
+    color: #5a6b8c;
+    font-size: 0.82rem;
+  }
+
+  .adaMapRow {
+    padding: 3px 0;
+    color: #2f6fb2;
+    font-size: 0.84rem;
+    font-weight: 750;
+  }
+
+  @keyframes adaPinPulse {
+    0% { opacity: 0.85; }
+    70% { opacity: 0.15; }
+    100% { opacity: 0; }
   }
 
   @media (max-width: 900px) {
