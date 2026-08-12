@@ -486,6 +486,16 @@ function AdminAnalyticsDashboard({ adminUser, onLogout }) {
 
       <MetricStrip metrics={data.metrics} />
 
+      <div className="adaPanel" style={{ marginBottom: 22 }}>
+        <p className="adaEyebrow">Players by location</p>
+        <h3 className="adaSectionTitle">Where players are playing from</h3>
+        <p className="adaMuted" style={{ marginBottom: 14 }}>
+          {data.playerLocations?.markers?.length || 0} located players ·{' '}
+          {(data.playerLocations?.countries?.length) || 0} countries
+        </p>
+        <PlayerLocationMap markers={data.playerLocations?.markers || []} />
+      </div>
+
       <div className="adaPanel">
         <p className="adaEyebrow">Player summary</p>
         <h3 className="adaSectionTitle">All players at a glance</h3>
