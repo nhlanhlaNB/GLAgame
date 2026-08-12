@@ -13,6 +13,7 @@ import AdminSdgMappingScreen from './AdminSdgMappingScreen'
 import AdminScoringRubricScreen from './AdminScoringRubricScreen'
 import AdminAssetTemplateScreen from './AdminAssetTemplateScreen'
 import AdminPlayerAnalyticsScreen from './AdminPlayerAnalyticsScreen'
+import AdminAnalyticsDashboard from './AdminAnalyticsDashboard'
 import AdminGoogleAnalyticsScreen from './AdminGoogleAnalyticsScreen'
 import AdminReportsScreen from './AdminReportsScreen'
 import AdminRewardsManagementScreen from './AdminRewardsManagementScreen'
@@ -85,6 +86,7 @@ function AdminApp() {
       {activeScreen === 'feedback-inbox' && <AdminFeedbackInboxScreen />}
       {activeScreen === 'card-images' && <AdminAssetTemplateScreen type="card-images" />}
       {activeScreen === 'certificate-templates' && <AdminAssetTemplateScreen type="certificate" />}
+      {activeScreen === 'analytics' && <AdminAnalyticsDashboard />}
       {activeScreen === 'google-analytics' && <AdminGoogleAnalyticsScreen />}
       {activeScreen === 'reports' && <AdminReportsScreen />}
     </AdminLayout>

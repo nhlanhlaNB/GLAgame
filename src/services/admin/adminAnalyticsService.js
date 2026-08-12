@@ -731,7 +731,8 @@ export async function getAdminAnalyticsDashboardData() {
       replayRate: `${replayRateValue}%`,
       replayRateValue,
       gameSessions: gameSessions.length,
-      attempts: attempts.length
+      attempts: attempts.length,
+      completedPlayers: completedPlayers.length
     },
     mostSelectedProblems,
     mostUsedAiCards,
@@ -751,7 +752,13 @@ export async function getAdminAnalyticsDashboardData() {
       completionSplit,
       replaySplit,
       certificateSplit,
-      playerStatusSplit
+      playerStatusSplit,
+      conversionFunnel: [
+        { name: 'Registered', value: playerUsers.length },
+        { name: 'Active', value: activePlayers.length },
+        { name: 'Completed 10+', value: completedPlayers.length },
+        { name: 'Certified', value: getCertificateCountFromUsers(playerUsers, certificates) }
+      ]
     },
     perProblem: {
       coinsByProblem,

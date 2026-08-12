@@ -59,6 +59,12 @@ function isToday(millis) {
   )
 }
 
+function isWithinWindow(millis, windowMillis) {
+  if (!millis) return false
+  const now = Date.now()
+  return millis > now - windowMillis && millis <= now
+}
+
 function countByKey(rows, keyGetter) {
   const map = {}
 
@@ -115,6 +121,18 @@ export async function getGoogleAnalyticsData() {
     isToday(timestampToMillis(event.createdAt))
   )
 
+  const last30MinEvents = events.filter((event) =>
+    isWithinWindow(timestampToMillis(event.createdAt), 30 * 60 * 1000)
+  )
+
+  const last1DayEvents = events.filter((event) =>
+    isWithinWindow(timestampToMillis(event.createdAt), 24 * 60 * 60 * 1000)
+  )
+
+  const last7DayEvents = events.filter((event) =>
+    isWithinWindow(timestampToMillis(event.createdAt), 7 * 24 * 60 * 60 * 1000)
+  )
+
   const uniqueUsers = new Set(events.map((event) => String(getEventUserId(event) || '')).filter(Boolean))
 
   const recentEvents = [...events]
@@ -137,6 +155,9 @@ export async function getGoogleAnalyticsData() {
     totalEvents: events.length,
     uniqueUsers: uniqueUsers.size,
     todayEvents: todayEvents.length,
+    last30MinEvents: last30MinEvents.length,
+    last1DayEvents: last1DayEvents.length,
+    last7DayEvents: last7DayEvents.length,
     eventsByType: countByKey(events, getEventType),
     eventsByName: countByKey(events, getEventName),
     topUsers: countByKey(events, (event) => {

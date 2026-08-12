@@ -36,24 +36,11 @@ const backgroundMedia = [
 ]
 const GameHome = lazy(() => import('./components/GameHome'))
 const AdminApp = lazy(() => import('./components/admin/AdminApp'))
-const AdminAnalyticsDashboard = lazy(() =>
-  import('./components/admin/AdminAnalyticsDashboard')
-)
 const AuthModal = lazy(() => import('./components/AuthModal'))
 
 
 function App() {
-  const pathname = window.location.pathname.toLowerCase()
-  const isAdminRoute = pathname.startsWith('/admin')
-  const isAnalyticsRoute = pathname.startsWith('/admin/analytics')
-
-  if (isAnalyticsRoute) {
-    return (
-      <Suspense fallback={<LoadingScreen />}>
-        <AdminAnalyticsDashboard />
-      </Suspense>
-    )
-  }
+  const isAdminRoute = window.location.pathname.toLowerCase().startsWith('/admin')
 
   if (isAdminRoute) {
     return (
