@@ -304,7 +304,27 @@ function isVeryWeakExplanation(text) {
   return cleaned.split(/\s+/).filter(Boolean).length <= 3
 }
 
-function getFeedback(parsed, userExplanation) {
+function buildAreaFeedbackFromScores(subScores = {}) {
+  const result = {}
+
+  RUBRIC_KEYS.forEach((key) => {
+    const max = RUBRIC_LIMITS[key]
+    const score = clamp(toNumber(subScores?.[key], 0), 0, max)
+    const ratio = max > 0 ? score / max : 0
+
+    if (ratio >= 0.8) {
+      result[key] = 'Strong: this part of the answer was clearly explained and earned high marks.'
+    } else if (ratio >= 0.5) {
+      result[key] = 'Decent: this part is on the right track but could be explained with more detail.'
+    } else {
+      result[key] = RUBRIC_FEEDBACK_DEFAULTS[key]
+    }
+  })
+
+  return result
+}
+
+function getFeedback(parsed, userExplanation, subScores = {}) {
   const weak = isVeryWeakExplanation(userExplanation)
 
   let overall =
@@ -331,10 +351,16 @@ function getFeedback(parsed, userExplanation) {
       : 'Improve your answer by explaining who will use the solution, how it will work, what resources are needed, and why it fits the African context.'
   }
 
+  const modelAreaFeedback = normaliseAreaFeedback(parsed)
+  const hasModelAreaFeedback = RUBRIC_KEYS.some((key) => {
+    const value = parsed?.feedback_by_area?.[key] || parsed?.area_feedback?.[key]
+    return typeof value === 'string' && value.trim() && value !== RUBRIC_FEEDBACK_DEFAULTS[key]
+  })
+
   return {
     overall,
     improvement,
-    by_area: normaliseAreaFeedback(parsed)
+    by_area: hasModelAreaFeedback ? modelAreaFeedback : buildAreaFeedbackFromScores(subScores)
   }
 }
 
@@ -374,7 +400,7 @@ function normaliseEvaluation(parsed, userExplanation) {
     subScores = distributeTotalIntoSubScores(totalScore)
   }
 
-  const feedback = getFeedback(parsed, userExplanation)
+  const feedback = getFeedback(parsed, userExplanation, subScores)
 
   return {
     total_score: totalScore,
@@ -532,7 +558,7 @@ async function callOllama({ endpoint, model, prompt }) {
         temperature: 0.1,
         keep_alive: '30m',
         options: {
-          num_predict: 400
+          num_predict: 180
         },
         format: 'json'
       })
@@ -621,7 +647,7 @@ async function callDeepSeek({ apiKey, model, prompt }) {
           type: 'json_object'
         },
         temperature: 0.1,
-        max_tokens: 1200
+        max_tokens: 300
       })
     })
 
@@ -677,7 +703,7 @@ async function callHF({ apiKey, model, prompt }) {
           type: 'json_object'
         },
         temperature: 0.1,
-        max_tokens: 1200
+        max_tokens: 300
       })
     })
 
@@ -803,7 +829,7 @@ Examples: ${(card.examples || []).slice(0, 3).join(', ')}`
 Description: ${selectedSolution.description}`
 
     const prompt = `
-Return valid JSON only. Do not include markdown, comments, explanations outside JSON, or trailing commas. Keep every feedback sentence short.
+Return valid JSON only. Do not include markdown, comments, explanations outside JSON, or trailing commas. Keep overall feedback to one short sentence and improvement to one short sentence.
 
 You are evaluating a player's GRIT Lab Africa AI/SDG card game solution.
 
@@ -849,7 +875,7 @@ The total_score must equal the sum of the sub_scores.
 The total_score must be between 1 and 100.
 GLA_coin_earned must equal total_score.
 
-Return exactly this JSON shape using double quotes for every key and string:
+Return exactly this JSON shape using double quotes for every key and string. Do NOT add a feedback_by_area field:
 
 {
   "total_score": 72,
@@ -866,17 +892,7 @@ Return exactly this JSON shape using double quotes for every key and string:
   "feedback": {
     "overall": "Short helpful feedback explaining why this score was given.",
     "improvement": "One clear way the player can improve the solution."
-  },
-  "feedback_by_area": {
-    "ai_card_relevance": "Precise reason for this sub-score.",
-    "combination_strength": "Precise reason for this sub-score.",
-    "practical_feasibility": "Precise reason for this sub-score.",
-    "african_context_and_feasibility": "Precise reason for this sub-score.",
-    "sdg_alignment": "Precise reason for this sub-score.",
-    "creativity_and_innovation": "Precise reason for this sub-score.",
-    "ethical_and_responsible_use": "Precise reason for this sub-score."
-  },
-  "certification_trackable": true
+  }
 }
 `
 

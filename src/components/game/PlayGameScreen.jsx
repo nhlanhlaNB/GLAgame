@@ -276,7 +276,7 @@ function handleSolutionDrop(event) {
                 const selected = selectedAiCards.some((selectedCard) => selectedCard.id === card.id)
                 const flipped = flippedAiCards.includes(card.id)
                 return (
-                  <div key={card.id} style={{ display: 'grid', gap: '8px' }}>
+                  <div key={card.id} style={{ display: 'grid', gap: '8px', contentVisibility: 'auto', containIntrinsicSize: 'auto 390px' }}>
                     <button
                       type="button"
                       data-gla-ai-card="true"
