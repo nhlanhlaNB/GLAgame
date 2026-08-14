@@ -531,7 +531,7 @@ function buildSafeFallbackEvaluation({ problemCard, selectedAiCards = [], select
 
 async function callOllama({ endpoint, model, prompt }) {
   const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 45000)
+  const timeout = setTimeout(() => controller.abort(), 19000)
 
   try {
     const response = await fetch(`${endpoint}/api/chat`, {
@@ -730,6 +730,8 @@ async function callHF({ apiKey, model, prompt }) {
   }
 }
 
+const isPlaceholderKey = (key) => !key || key.startsWith('paste_your_') || key === 'placeholder'
+
 async function callAI({ prompt, ollamaEndpoint, ollamaModel, deepseekKey, deepseekModel, hfKey, hfModel }) {
   try {
     const result = await callOllama({ endpoint: ollamaEndpoint, model: ollamaModel, prompt })
@@ -738,13 +740,13 @@ async function callAI({ prompt, ollamaEndpoint, ollamaModel, deepseekKey, deepse
     }
     console.error('Ollama returned a non-OK response:', result.response.status)
   } catch (error) {
-    console.error('Ollama failed, falling back to DeepSeek:', {
+    console.error('Ollama failed, skipping cloud fallbacks:', {
       name: error?.name,
       message: error?.message
     })
   }
 
-  const dsConfigured = deepseekKey && deepseekKey !== 'paste_your_real_deepseek_api_key_here'
+  const dsConfigured = !isPlaceholderKey(deepseekKey)
 
   if (dsConfigured) {
     try {
@@ -754,7 +756,7 @@ async function callAI({ prompt, ollamaEndpoint, ollamaModel, deepseekKey, deepse
       }
       console.error('DeepSeek returned a non-OK response:', result.response.status)
     } catch (error) {
-      console.error('DeepSeek failed, falling back to Hugging Face:', {
+      console.error('DeepSeek failed, skipping Hugging Face:', {
         name: error?.name,
         message: error?.message,
         status: error?.status
@@ -762,7 +764,11 @@ async function callAI({ prompt, ollamaEndpoint, ollamaModel, deepseekKey, deepse
     }
   }
 
-  return { source: 'huggingface', ...(await callHF({ apiKey: hfKey, model: hfModel, prompt })) }
+  if (!isPlaceholderKey(hfKey)) {
+    return { source: 'huggingface', ...(await callHF({ apiKey: hfKey, model: hfModel, prompt })) }
+  }
+
+  return { source: 'none', response: { ok: false, status: 0 }, data: {} }
 }
 
 export async function handler(event) {
@@ -897,7 +903,6 @@ Return exactly this JSON shape using double quotes for every key and string. Do 
 `
 
     let content = ''
-    let aiError = ''
     let usedSource = ''
 
     for (let attempt = 1; attempt <= 1; attempt += 1) {
@@ -915,11 +920,6 @@ Return exactly this JSON shape using double quotes for every key and string. Do 
       const { response, data } = result
 
       if (!response.ok) {
-        aiError =
-          data?.error?.message ||
-          data?.message ||
-          'The scoring engine could not score the explanation right now.'
-
         continue
       }
 
@@ -928,14 +928,6 @@ Return exactly this JSON shape using double quotes for every key and string. Do 
       if (content) {
         break
       }
-    }
-
-    if (!content) {
-      return jsonResponse(502, {
-        error:
-          aiError ||
-          'The scoring engine returned an empty response. Please try again in a few seconds.'
-      })
     }
 
     const parsed = parseScoringJson(content)
@@ -949,7 +941,10 @@ Return exactly this JSON shape using double quotes for every key and string. Do 
           userExplanation
         })
 
-    return jsonResponse(200, normalised)
+    return jsonResponse(200, {
+      ...normalised,
+      scoring_source: parsed ? usedSource : 'local-fallback'
+    })
   } catch (err) {
     return jsonResponse(500, {
       error: err.message || 'Internal server error.'
