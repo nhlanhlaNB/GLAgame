@@ -426,11 +426,7 @@ function PlayerApp() {
       )}
 
       <footer className="footer">
-        <p>
-          <strong>GRIT Lab Africa</strong> © 2026
-        </p>
-
-        <p>Powered by GRIT Lab Africa</p>
+        <p>GRIT Lab Africa © 2016-2026 All rights reserved.</p>
       </footer>
 
       {showAuthModal && (
