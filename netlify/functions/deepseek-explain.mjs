@@ -556,7 +556,6 @@ async function callOllama({ endpoint, model, prompt }) {
         ],
         stream: false,
         temperature: 0.1,
-        keep_alive: '30m',
         options: {
           num_predict: 180
         },
