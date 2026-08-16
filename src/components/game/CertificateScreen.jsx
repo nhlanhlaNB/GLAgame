@@ -3,6 +3,10 @@ import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import { styles } from './gameStyles'
 import { ActionButton, MetricCard, SectionHeader } from './ui'
+import certificateBg from '../../assets/images/certificate-bg.jpg'
+
+const NAME_TOP_PERCENT = 56.5
+const NAME_FONT_SIZE_PERCENT = 3.1
 
 function makeSafeFileName(value) {
   return String(value || 'GLA-AI-Certificate')
@@ -30,7 +34,7 @@ function CertificateScreen({
   averageScore,
   certificateUnlocked,
   certificateId,
-  issueDate,
+  issueDate: _issueDate,
   onBackToDashboard
 }) {
   const certificateRef = useRef(null)
@@ -47,7 +51,7 @@ function CertificateScreen({
         useCORS: true,
         allowTaint: true,
         logging: false,
-        backgroundColor: '#fff8eb'
+        backgroundColor: null
       })
 
       const imageData = canvas.toDataURL('image/png', 1)
@@ -85,14 +89,6 @@ function CertificateScreen({
 
   return (
     <div style={styles.panel}>
-      <style>{`
-        .certificateCanvas { max-width: 100%; overflow-wrap: anywhere; }
-        @media (max-width: 700px) {
-          .certificateCanvas { padding: 24px !important; border-radius: 20px !important; }
-          .certificateCanvas h1 { font-size: 1.65rem !important; }
-          .certificateCanvas h2 { font-size: 1.45rem !important; }
-        }
-      `}</style>
       <SectionHeader eyebrow="Certificate" title="GRIT Lab Africa certificate">
         Complete 10 problem cards with an average score of 75 or higher to unlock your certificate.
       </SectionHeader>
@@ -108,49 +104,39 @@ function CertificateScreen({
         ref={certificateRef}
         className="certificateCanvas"
         style={{
+          position: 'relative',
+          width: '100%',
+          maxWidth: '1000px',
+          margin: '0 auto',
           marginTop: '24px',
-          padding: '42px',
           borderRadius: '28px',
-          background: 'linear-gradient(135deg, #fff8eb, #f4d28a)',
-          border: '3px solid rgba(154, 106, 34, 0.65)',
-          boxShadow: '0 22px 48px rgba(80, 52, 20, 0.18)',
-          textAlign: 'center',
-          color: '#3b2817'
+          overflow: 'hidden',
+          boxShadow: '0 22px 48px rgba(80, 52, 20, 0.18)'
         }}
       >
-        <p style={{ margin: 0, fontWeight: 900, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#9a6a22' }}>
-          GRIT Lab Africa
-        </p>
+        <img
+          src={certificateBg}
+          alt="Certificate"
+          style={{ width: '100%', height: 'auto', display: 'block' }}
+        />
 
-        <h1 style={{ margin: '18px 0 8px', fontSize: '2.3rem', color: '#5c3512' }}>
-          Certificate of Achievement
-        </h1>
-
-        <p style={{ margin: '16px 0', fontSize: '1.05rem', fontWeight: 700 }}>
-          This certificate is proudly awarded to
-        </p>
-
-        <h2 style={{ margin: '10px 0', fontSize: '2rem', color: '#9a6a22' }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: `${NAME_TOP_PERCENT}%`,
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '56%',
+            textAlign: 'center',
+            fontFamily: "'Brush Script MT', cursive",
+            fontSize: `${NAME_FONT_SIZE_PERCENT}vw`,
+            color: '#0b1f3a',
+            whiteSpace: 'nowrap',
+            pointerEvents: 'none'
+          }}
+        >
           {fullName || 'Player'}
-        </h2>
-
-        <p style={{ margin: '18px auto', maxWidth: '850px', lineHeight: 1.7, fontSize: '1rem', fontWeight: 700 }}>
-          for successfully completing the Artificial Intelligence and Practical Applications:
-          Gaming SDG Problems and Ideating Solutions for Africa learning journey.
-        </p>
-
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '18px', flexWrap: 'wrap', marginTop: '22px' }}>
-          <span>Completed Problems: {completedProblems}</span>
-          <span>Average Score: {averageScore}%</span>
-<span>
-  Date: {certificateUnlocked
-    ? issueDate || new Date().toLocaleDateString('en-ZA')
-    : 'Pending'}
-</span>        </div>
-
-        <p style={{ marginTop: '26px', fontSize: '0.9rem', fontWeight: 800 }}>
-          Certificate ID: {certificateUnlocked ? certificateId : 'Pending'}
-        </p>
+        </div>
       </div>
 
       {!certificateUnlocked && (
