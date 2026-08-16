@@ -100,49 +100,65 @@ function CertificateScreen({
         <MetricCard title="Certificate ID" value={certificateUnlocked ? certificateId : 'Pending'} />
       </div>
 
-      <div
-        ref={certificateRef}
-        className="certificateCanvas"
-        style={{
-          position: 'relative',
-          width: '100%',
-          maxWidth: '1000px',
-          margin: '0 auto',
-          marginTop: '24px',
-          borderRadius: '28px',
-          overflow: 'hidden',
-          boxShadow: '0 22px 48px rgba(80, 52, 20, 0.18)'
-        }}
-      >
-        <img
-          src={certificateBg}
-          alt="Certificate"
-          style={{ width: '100%', height: 'auto', display: 'block' }}
-        />
-
+      {certificateUnlocked && (
         <div
+          ref={certificateRef}
+          className="certificateCanvas"
           style={{
-            position: 'absolute',
-            top: `${NAME_TOP_PERCENT}%`,
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '56%',
-            textAlign: 'center',
-            fontFamily: "'Brush Script MT', cursive",
-            fontSize: `${NAME_FONT_SIZE_PERCENT}vw`,
-            color: '#0b1f3a',
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none'
+            position: 'relative',
+            width: '100%',
+            maxWidth: '1000px',
+            margin: '0 auto',
+            marginTop: '24px',
+            borderRadius: '28px',
+            overflow: 'hidden',
+            boxShadow: '0 22px 48px rgba(80, 52, 20, 0.18)'
           }}
         >
-          {fullName || 'Player'}
+          <img
+            src={certificateBg}
+            alt="Certificate"
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+          />
+
+          <div
+            style={{
+              position: 'absolute',
+              top: `${NAME_TOP_PERCENT}%`,
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '56%',
+              textAlign: 'center',
+              fontFamily: "'Brush Script MT', cursive",
+              fontSize: `${NAME_FONT_SIZE_PERCENT}vw`,
+              color: '#0b1f3a',
+              whiteSpace: 'nowrap',
+              pointerEvents: 'none'
+            }}
+          >
+            {fullName || 'Player'}
+          </div>
         </div>
-      </div>
+      )}
 
       {!certificateUnlocked && (
-        <p style={{ ...styles.dangerText, textAlign: 'center', marginTop: '18px' }}>
-          Certificate is still locked. You need 10 completed problem cards and an average score of at least 75%.
-        </p>
+        <div
+          style={{
+            marginTop: '24px',
+            textAlign: 'center',
+            padding: '28px',
+            borderRadius: '22px',
+            background: 'rgba(255, 255, 255, 0.64)',
+            border: '1px solid rgba(139, 92, 40, 0.16)'
+          }}
+        >
+          <p style={{ margin: 0, fontSize: '1.05rem', fontWeight: 850, color: '#5c3512' }}>
+            Your certificate will appear here once you qualify.
+          </p>
+          <p style={{ margin: '8px 0 0', fontSize: '0.95rem', fontWeight: 700, color: '#9a3412' }}>
+            Complete 10 problem cards with an average score of at least 75% to unlock it.
+          </p>
+        </div>
       )}
 
       <div style={styles.centerButtonRow}>
